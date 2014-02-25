@@ -78,6 +78,12 @@ class DataTables extends \Twig_Extension
             'addDataTable'     => new \Twig_SimpleFunction('addDataTable', array($this, 'addDataTable'), array(
                     'is_safe' => array('html')
                 )),
+            'addDataTableJs'     => new \Twig_SimpleFunction('addDataTableJs', array($this, 'addDataTableJs'), array(
+                    'is_safe' => array('html')
+                )),
+            'addDataTableHtml'     => new \Twig_SimpleFunction('addDataTableHtml', array($this, 'addDataTableHtml'), array(
+                    'is_safe' => array('html')
+                )),
         );
     }
 
@@ -154,14 +160,50 @@ class DataTables extends \Twig_Extension
 
         $this->params = $this->buildParams($params);
 
-        if(isset($params['noscripts']))
-        {
-            return $this->renderTable();
-        } elseif(isset($params['onlyscripts']))
-        {
-            return $this->renderJs();
-        }
         return $this->renderJs() .$this->renderTable();
+    }
+
+    /**
+     * addDataTable
+     *
+     * @param array $columns
+     * @param array $params
+     *
+     * @return string
+     */
+    public function addDataTableJs($columns, $params = array())
+    {
+        if ($columns instanceof DataTableInterface) {
+            $this->dataTable = $columns;
+            $this->columns   = $this->dataTable->getColumns();
+        } else {
+            $this->columns = $columns;
+        }
+
+        $this->params = $this->buildParams($params);
+
+        return $this->renderJs();
+    }
+    /**
+     * addDataTable
+     *
+     * @param array $columns
+     * @param array $params
+     *
+     * @return string
+     */
+    public function addDataTableHtml($columns, $params = array())
+    {
+        if ($columns instanceof DataTableInterface) {
+            $this->dataTable = $columns;
+            $this->columns   = $this->dataTable->getColumns();
+        } else {
+            $this->columns = $columns;
+        }
+
+        $this->params = $this->buildParams($params);
+
+        return $this->renderTable();
     }
 
     /**
