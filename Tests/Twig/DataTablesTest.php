@@ -195,6 +195,38 @@ class DataTablesTest extends AbstractBaseTest
         $this->assertArrayHasKey('script_template', $resultParams);
         $this->assertArrayHasKey('path', $resultParams);
     }
+    /**
+     * testAddDataTableJs
+     */
+    public function testAddDataTableJs()
+    {
+        $columns = array();
+        $params  = null;
+
+        $this->service->initRuntime($this->environment);
+        $this->service->addDataTableJs($columns, $params);
+        $resultParams = $this->getProtectedValue($this->service, 'params');
+
+        $this->assertArrayHasKey('table_template', $resultParams);
+        $this->assertArrayHasKey('script_template', $resultParams);
+        $this->assertArrayHasKey('path', $resultParams);
+    }
+    /**
+     * testAddDataTableHtml
+     */
+    public function testAddDataTableHtml()
+    {
+        $columns = array();
+        $params  = null;
+
+        $this->service->initRuntime($this->environment);
+        $this->service->addDataTableHtml($columns, $params);
+        $resultParams = $this->getProtectedValue($this->service, 'params');
+
+        $this->assertArrayHasKey('table_template', $resultParams);
+        $this->assertArrayHasKey('script_template', $resultParams);
+        $this->assertArrayHasKey('path', $resultParams);
+    }
 
     /**
      * testBuildJsParamsEmpty
