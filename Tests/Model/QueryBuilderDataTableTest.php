@@ -296,8 +296,8 @@ class QueryBuilderDataTableTest extends AbstractBaseTest
      */
     public function testGetValueObjectUnknown()
     {
-        $expectedResult = 'Unknown';
-        $row            = array();
+        $expectedResult = array();
+        $row            = $expectedResult;
         $source         = '';
 
         $result = $this->callProtected($this->dataTable, 'getObjectValue', array($row, $source));
