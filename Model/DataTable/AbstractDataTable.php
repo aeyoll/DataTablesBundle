@@ -37,6 +37,11 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
     protected $metaData = null;
 
     /**
+     * @var null
+     */
+    protected $bulkFormView = null;
+
+    /**
      * __construct
      *
      * @param array $columns
@@ -103,9 +108,19 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
         foreach($this->metaData['columns'] as $column) {
             if (isset($column->format)) {
                 $args = array();
-                foreach($column->format->dataFields as $name => $source) {
-                    $args[$name] = $this->getDataValue($row, $source);
+
+                if ($this->bulkFormView != null) {
+                    $args['form'] = $this->bulkFormView;
                 }
+
+                foreach($column->format->dataFields as $name => $source) {
+                    if (preg_match("/^'.*'$/", $source)) {
+                        $args[$name] = substr($source, 1, strlen($source)-2);
+                    } else {
+                        $args[$name] = $this->getDataValue($row, $source);
+                    }
+                }
+
                 if ($column->format->template != null) {
                     $renderer = $this->container->get('templating');
                     $result[] = $renderer->render($column->format->template, $args);
@@ -153,15 +168,16 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
      */
     protected function getObjectValue($row, $source)
     {
-        $result = 'Unknown';
-
-        $tokens = explode('.', $source);
+        $result      = 'Unknown';
+        $tokens      = explode('.', $source);
         $currentName = array_pop($tokens);
         $name        = 'get' . Inflector::classify($currentName);
-        if (count($tokens) <= 1 && method_exists($row, $name)) {
+        $tokenCount  = count($tokens);
+
+        if ($tokenCount <= 1 && method_exists($row, $name)) {
             $result = $row->$name();
         } else {
-            if (count($tokens) > 1) {
+            if ($tokenCount > 1) {
                 $sub = $this->getObjectValue($row, implode('.', $tokens));
                 if (is_object($sub) && method_exists($sub,$name)) {
                     $result = $sub->$name();
@@ -173,6 +189,8 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
                         $result[] = $this->getObjectValue($d, implode('.', $remainingTokens));
                     }
                 }
+            } else if($tokenCount == 0) {
+                $result = $row;
             }
         }
 
@@ -269,5 +287,20 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
         return $this->metaData;
     }
 
+    /**
+     * @param $bulkForm
+     */
+    public function setBulkFormView($bulkForm)
+    {
+        $this->bulkFormView = $bulkForm;
+    }
+
+    /**
+     * @return null
+     */
+    public function getBulkFormView()
+    {
+        return $this->bulkFormView;
+    }
 
 }
