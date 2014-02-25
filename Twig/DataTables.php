@@ -154,7 +154,14 @@ class DataTables extends \Twig_Extension
 
         $this->params = $this->buildParams($params);
 
-        return $this->renderJs() . $this->renderTable();
+        if(isset($params['noscripts']))
+        {
+            return $this->renderTable();
+        } elseif(isset($params['onlyscripts']))
+        {
+            return $this->renderJs();
+        }
+        return $this->renderJs() .$this->renderTable();
     }
 
     /**
