@@ -151,20 +151,13 @@ class DataTables extends \Twig_Extension
      */
     public function addDataTable($columns, $params = array())
     {
-        if ($columns instanceof DataTableInterface) {
-            $this->dataTable = $columns;
-            $this->columns   = $this->dataTable->getColumns();
-        } else {
-            $this->columns = $columns;
-        }
-
-        $this->params = $this->buildParams($params);
+        $this->initProperties($columns, $params);
 
         return $this->renderJs() .$this->renderTable();
     }
 
     /**
-     * addDataTable
+     * addDataTableJs
      *
      * @param array $columns
      * @param array $params
@@ -173,19 +166,12 @@ class DataTables extends \Twig_Extension
      */
     public function addDataTableJs($columns, $params = array())
     {
-        if ($columns instanceof DataTableInterface) {
-            $this->dataTable = $columns;
-            $this->columns   = $this->dataTable->getColumns();
-        } else {
-            $this->columns = $columns;
-        }
-
-        $this->params = $this->buildParams($params);
+        $this->initProperties($columns, $params);
 
         return $this->renderJs();
     }
     /**
-     * addDataTable
+     * addDataTableHtml
      *
      * @param array $columns
      * @param array $params
@@ -194,14 +180,7 @@ class DataTables extends \Twig_Extension
      */
     public function addDataTableHtml($columns, $params = array())
     {
-        if ($columns instanceof DataTableInterface) {
-            $this->dataTable = $columns;
-            $this->columns   = $this->dataTable->getColumns();
-        } else {
-            $this->columns = $columns;
-        }
-
-        $this->params = $this->buildParams($params);
+        $this->initProperties($columns, $params);
 
         return $this->renderTable();
     }
@@ -404,5 +383,21 @@ class DataTables extends \Twig_Extension
     public function getName()
     {
         return 'data_tables';
+    }
+
+    /**
+     * @param $columns
+     * @param $params
+     */
+    private function initProperties($columns, $params)
+    {
+        if ($columns instanceof DataTableInterface) {
+            $this->dataTable = $columns;
+            $this->columns = $this->dataTable->getColumns();
+        } else {
+            $this->columns = $columns;
+        }
+
+        $this->params = $this->buildParams($params);
     }
 }
