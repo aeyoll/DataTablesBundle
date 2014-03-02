@@ -9,6 +9,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 use Symfony\Component\Security\Core\Util\ClassUtils;
 use Symfony\Component\Yaml\Parser;
+use Doctrine\Common\Annotations\FileCacheReader;
 
 /**
  * Class TableManager
@@ -22,6 +23,11 @@ class TableManager
      * @var \Doctrine\Common\Annotations\AnnotationReader
      */
     private $reader;
+
+    /**
+     * @var \Doctrine\Common\Annotations\FileCacheReader
+     */
+    protected $cachedReader;
 
     /**
      * @var \Symfony\Component\DependencyInjection\ContainerInterface
@@ -367,13 +373,13 @@ class TableManager
             $realBundle      = $this->kernel->getBundle($bundle);
             $relativePath    = str_replace('/','\\',$file->getRelativePath());
             if (strlen($relativePath) > 0) $relativePath = '\\' . $relativePath;
-            $bundleNamespace = substr(get_class($realBundle), 0, -strlen($bundle)) . $dir . $relativePath;
+            $bundleLong      = get_class($realBundle);
+            $bundleNamespace = substr(get_class($realBundle), 0, -(strlen($bundleLong) - strrpos($bundleLong, '\\'))) . '\\' . $dir . $relativePath;
             $shortName = basename($file->getRelativePathname(),'.php');
             $class = $bundleNamespace . '\\' . $shortName;
-
             $refl = new \ReflectionClass($class);
             if (!$refl->isAbstract()) {
-                $annotations = $this->reader->getClassAnnotations($refl);
+                $annotations = $this->getReader()->getClassAnnotations($refl);
                 foreach ($annotations as $annotation) {
                     if ($annotation instanceof Table) {
                         if ($annotation->id == null) {
@@ -389,5 +395,21 @@ class TableManager
         return $tables;
     }
 
+    /**
+     * getReader
+     *
+     * @return FileCacheReader
+     */
+    protected function getReader()
+    {
+        if ($this->cachedReader != null) {
+            return $this->cachedReader;
+        }
+
+        $kernel = $this->container->get('kernel');
+        $this->cachedReader = new FileCacheReader($this->reader, $kernel->getCacheDir(), $kernel->getEnvironment() == 'dev');
+
+        return $this->cachedReader;
+    }
 
 }
