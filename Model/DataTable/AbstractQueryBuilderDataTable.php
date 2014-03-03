@@ -19,11 +19,14 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
     protected $queryBuilder = null;
 
     /**
+<<<<<<< HEAD
      * @var bool
      */
     public $hydrateObjects = false;
 
     /**
+=======
+>>>>>>> master
      * @var \Doctrine\ORM\EntityManager
      */
     protected $em;
