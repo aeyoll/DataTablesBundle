@@ -260,7 +260,7 @@ class RequestParameterBagTest extends AbstractBaseTest
      */
     public function testHasColumnSearchFalseSearchable()
     {
-        $this->callProtected($this->model,'setVarByNameId', array('searchable', 2, 'true'));
+        $this->callProtected($this->model,'setVarByNameId', array('searchable', 2, 'false'));
         $this->assertFalse($this->model->hasColumnSearch(2));
     }
 
