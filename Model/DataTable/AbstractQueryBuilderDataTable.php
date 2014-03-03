@@ -18,6 +18,11 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
     protected $queryBuilder = null;
 
     /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
      * getData
      *
      * override this function to return a raw data array
@@ -104,5 +109,21 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
     public function getQueryBuilder(Request $request)
     {
         return $this->queryBuilder;
+    }
+
+    /**
+     * @param EntityManager $em
+     */
+    public function setEm(EntityManager $em = null)
+    {
+        $this->em = $em;
+    }
+
+    /**
+     * @return \Brown298\DtTestBundle\Model\Doctrine\ORM\EntityManager
+     */
+    public function getEm()
+    {
+        return $this->em;
     }
 } 
