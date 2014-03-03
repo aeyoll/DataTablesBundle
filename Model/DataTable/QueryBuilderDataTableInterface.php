@@ -39,4 +39,15 @@ interface QueryBuilderDataTableInterface extends DataTableInterface
      * @return mixed
      */
     public function getQueryBuilder(Request $request);
+
+    /**
+     * @param EntityManager $em
+     * @return mixed
+     */
+    public function setEm(EntityManager $em = null);
+
+    /**
+     * @return EntityManger
+     */
+    public function getEm();
 } 
