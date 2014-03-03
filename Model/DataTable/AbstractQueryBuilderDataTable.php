@@ -3,6 +3,7 @@ namespace Brown298\DataTablesBundle\Model\DataTable;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Class AbstractQueryBuilderDataTable
@@ -120,7 +121,7 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
     }
 
     /**
-     * @return \Brown298\DtTestBundle\Model\Doctrine\ORM\EntityManager
+     * @return Doctrine\ORM\EntityManager
      */
     public function getEm()
     {

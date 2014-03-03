@@ -3,6 +3,7 @@ namespace Brown298\DataTablesBundle\Model\DataTable;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Interface QueryBuilderDataTableInterface
