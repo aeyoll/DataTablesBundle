@@ -81,4 +81,14 @@ abstract class AbstractProcessor
     {
         return $this->requestParameters->getColumns();
     }
+
+    /**
+     * getSearchColumns
+     *
+     * @return array
+     */
+    public function getSearchColumns()
+    {
+        return $this->requestParameters->getSearchColumns();
+    }
 }
