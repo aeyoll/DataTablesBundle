@@ -146,7 +146,8 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
             }
 
             if ($column->format->template != null) {
-                $result = $renderer->render($column->format->template, $args);
+                $renderer = $this->container->get('templating');
+                $result   = $renderer->render($column->format->template, $args);
             } else { // no render so send back the raw data
                 $result = $args;
             }
@@ -164,7 +165,6 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
     public function getColumnRendering($row)
     {
         $result   = array();
-        $renderer = $this->container->get('templating');
         if ($this->cacheBag != null) { $d = serialize($row);
             $key = $this->cacheBag->getKeyName('row_data', array(hash('md4', serialize($row))));
             if ($result = $this->cacheBag->fetch($key)) {
@@ -174,7 +174,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
 
         if (empty($result)) {
             foreach($this->metaData['columns'] as $column) {
-                $result[] = $this->getColumnRendered($renderer, $row, $column);
+                $result[] = $this->getColumnRendered( $row, $column);
             }
             if ($this->cacheBag != null) {
                 $this->cacheBag->save($key, serialize($result));
