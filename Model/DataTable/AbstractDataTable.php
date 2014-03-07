@@ -124,11 +124,12 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
     /**
      * getColumnRendered
      *
+     * @param $row
      * @param $column
      *
      * @return array|null
      */
-    protected function getColumnRendered($renderer, $row, $column)
+    protected function getColumnRendered($row, $column)
     {
         if (isset($column->format)) {
             $args = array();
@@ -174,7 +175,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
 
         if (empty($result)) {
             foreach($this->metaData['columns'] as $column) {
-                $result[] = $this->getColumnRendered( $row, $column);
+                $result[] = $this->getColumnRendered($row, $column);
             }
             if ($this->cacheBag != null) {
                 $this->cacheBag->save($key, serialize($result));
