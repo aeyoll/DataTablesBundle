@@ -2,6 +2,7 @@
 namespace Brown298\DataTablesBundle\Service;
 
 use Brown298\DataTablesBundle\MetaData\Table;
+use Brown298\DataTablesBundle\Model\Cache\CacheBag;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -70,6 +71,11 @@ class TableManager
     protected $parser;
 
     /**
+     * @var
+     */
+    protected $cacheServiceName;
+
+    /**
      * @param ContainerInterface $container
      * @param AnnotationReader $reader
      * @param array $configPathSearch
@@ -81,7 +87,8 @@ class TableManager
         AnnotationReader   $reader,
         array              $configPathSearch,
         array              $annotationPathSearch,
-        EntityManager      $em
+        EntityManager      $em,
+                           $cacheServiceName
     ) {
         $this->annotationPathSearch = $annotationPathSearch;
         $this->reader               = $reader;
@@ -89,6 +96,7 @@ class TableManager
         $this->kernel               = $container->get('kernel');
         $this->em                   = $em;
         $this->configPathSearch     = $configPathSearch;
+        $this->cacheServiceName     = $cacheServiceName;
     }
 
     /**
@@ -176,6 +184,13 @@ class TableManager
             }
 
             $this->builtTables[$id] = $tableBuilder->build(func_get_args());
+
+            if ($this->cacheServiceName !== '' && $this->container->has($this->cacheServiceName)) {
+                $cache = $this->container->get($this->cacheServiceName);
+                $env   = $this->kernel->getEnvironment();
+                $cacheBag = new CacheBag($cache, $env);
+                $this->builtTables[$id]->setCache($cacheBag);
+            }
 
             return $this->builtTables[$id];
         } else {

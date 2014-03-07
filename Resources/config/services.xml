@@ -9,6 +9,7 @@
         <parameter key="data_tables.service.class">Brown298\DataTablesBundle\Service\ServerProcessService</parameter>
         <parameter key="data_tables.reader.class">Doctrine\Common\Annotations\AnnotationReader</parameter>
         <parameter key="data_tables.manager.class">Brown298\DataTablesBundle\Service\TableManager</parameter>
+        <parameter key="data_tables.cache.serviceName"></parameter>
 
         <!-- twig extensions -->
         <parameter key="data_tables.twig.extension.class">Brown298\DataTablesBundle\Twig\DataTables</parameter>
@@ -34,6 +35,7 @@
             <argument>%data_tables.config_search_path%</argument>
             <argument>%data_tables.annotation_search_path%</argument>
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument>%data_tables.cache.serviceName%</argument>
         </service>
 
         <!-- twig extensions -->
