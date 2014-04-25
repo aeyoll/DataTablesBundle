@@ -290,7 +290,6 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
      */
     public function getTotalRecords(QueryBuilder $qb, $alias)
     {
-        $qb = $this->addSearch($qb);
         $qb->select(array("count({$alias})"))
             ->setMaxResults(1);
 
