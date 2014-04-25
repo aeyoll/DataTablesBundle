@@ -61,7 +61,7 @@ class TableManagerTest extends AbstractBaseTest
         $this->parser    = Phake::mock('\Symfony\Component\Yaml\Parser');
         Phake::when($this->container)->get('kernel')->thenReturn($this->kernel);
 
-        $this->tableManager = new TableManager($this->container, $this->reader, array(), array(), $this->em);
+        $this->tableManager = new TableManager($this->container, $this->reader, array(), array(), $this->em, '');
     }
 
     /**

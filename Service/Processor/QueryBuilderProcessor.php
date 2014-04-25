@@ -154,7 +154,7 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
 
         // add search
         $this->debug("sSearch: {$search}");
-        $searchColumns = $this->getColumns();
+        $searchColumns = $this->getSearchColumns();
 
         if (!empty($searchColumns)) {
             $this->debug('SearchColumns:' . implode(', ',$searchColumns));

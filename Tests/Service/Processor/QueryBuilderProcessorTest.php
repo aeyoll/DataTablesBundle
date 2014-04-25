@@ -261,7 +261,7 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
         $this->assertEquals($this->queryBuilder, $result);
 
         // verify addSearch
-        Phake::verify($this->requestParameters)->getSearchColumns();
+        Phake::verify($this->requestParameters, Phake::atLeast(1))->getSearchColumns();
 
         // verify addOrder
         Phake::verify($this->requestParameters)->getSortingColumns();
@@ -300,7 +300,7 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
             'a.id' => 'ID',
         );
         Phake::when($this->requestParameters)->getSearchString()->thenReturn('test');
-        Phake::when($this->requestParameters)->getColumns()->thenReturn($columns);
+        Phake::when($this->requestParameters)->getSearchColumns()->thenReturn($columns);
         $this->setProtectedValue($this->service, 'requestParameters', $this->requestParameters);
         $this->service->setLogger($this->logger);
 
@@ -322,7 +322,7 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
             'a.name' => 'Name',
         );
         Phake::when($this->requestParameters)->getSearchString()->thenReturn('test');
-        Phake::when($this->requestParameters)->getColumns()->thenReturn($columns);
+        Phake::when($this->requestParameters)->getSearchColumns()->thenReturn($columns);
         $this->setProtectedValue($this->service, 'requestParameters', $this->requestParameters);
         $this->service->setLogger($this->logger);
 

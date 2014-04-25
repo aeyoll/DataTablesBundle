@@ -1,7 +1,9 @@
 <?php
 namespace Brown298\DataTablesBundle\Model\DataTable;
 
+use Brown298\DataTablesBundle\Model\Cache\CacheBagInterface;
 use Doctrine\Common\Inflector\Inflector;
+use Metadata\Cache\CacheInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -42,6 +44,11 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
     protected $bulkFormView = null;
 
     /**
+     * @var Brown298\DataTablesBundle\Model\Cache\CacheBagInterface|null
+     */
+    protected $cacheBag = null;
+
+    /**
      * __construct
      *
      * @param array $columns
@@ -51,6 +58,22 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
         if ($columns !== null) {
             $this->columns = $columns;
         }
+    }
+
+    /**
+     * @param null $cache
+     */
+    public function setCache(CacheBagInterface $cache = null)
+    {
+        $this->cacheBag = $cache;
+    }
+
+    /**
+     * @return null
+     */
+    public function getCache()
+    {
+        return $this->cacheBag;
     }
 
     /**
@@ -99,38 +122,66 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
     }
 
     /**
+     * getColumnRendered
+     *
+     * @param $row
+     * @param $column
+     *
+     * @return array|null
+     */
+    protected function getColumnRendered($row, $column)
+    {
+        if (isset($column->format)) {
+            $args = array();
+
+            if ($this->bulkFormView != null) {
+                $args['form'] = $this->bulkFormView;
+            }
+
+            foreach($column->format->dataFields as $name => $source) {
+                if (preg_match("/^'.*'$/", $source)) {
+                    $args[$name] = substr($source, 1, strlen($source)-2);
+                } else {
+                    $args[$name] = $this->getDataValue($row, $source);
+                }
+            }
+
+            if ($column->format->template != null) {
+                $renderer = $this->container->get('templating');
+                $result   = $renderer->render($column->format->template, $args);
+            } else { // no render so send back the raw data
+                $result = $args;
+            }
+        } else {
+            $result = $this->getDataValue($row, $column->source);
+        }
+
+        return $result;
+    }
+
+    /**
      * @param $row
      * @return array
      */
     public function getColumnRendering($row)
     {
-        $result = array();
-        foreach($this->metaData['columns'] as $column) {
-            if (isset($column->format)) {
-                $args = array();
-
-                if ($this->bulkFormView != null) {
-                    $args['form'] = $this->bulkFormView;
-                }
-
-                foreach($column->format->dataFields as $name => $source) {
-                    if (preg_match("/^'.*'$/", $source)) {
-                        $args[$name] = substr($source, 1, strlen($source)-2);
-                    } else {
-                        $args[$name] = $this->getDataValue($row, $source);
-                    }
-                }
-
-                if ($column->format->template != null) {
-                    $renderer = $this->container->get('templating');
-                    $result[] = $renderer->render($column->format->template, $args);
-                } else { // no render so send back the raw data
-                    $result[] = $args;
-                }
-            } else {
-                $result[] = $this->getDataValue($row, $column->source);
+        $result   = array();
+        if ($this->cacheBag != null) { $d = serialize($row);
+            $key = $this->cacheBag->getKeyName('row_data', array(hash('md4', serialize($row))));
+            if ($result = $this->cacheBag->fetch($key)) {
+                $result = unserialize($result);
             }
         }
+
+        if (empty($result)) {
+            foreach($this->metaData['columns'] as $column) {
+                $result[] = $this->getColumnRendered($row, $column);
+            }
+            if ($this->cacheBag != null) {
+                $this->cacheBag->save($key, serialize($result));
+            }
+        }
+
         return $result;
     }
 

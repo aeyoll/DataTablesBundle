@@ -176,7 +176,7 @@ class RequestParameterBag extends AbstractParamterBag
                     $results[$name] = $this->getColumnSearch($i);
                 }
             }
-
+            
             $i += 1;
         }
         return $results;
