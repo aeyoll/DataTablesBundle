@@ -3,6 +3,7 @@ namespace Brown298\DataTablesBundle\Service\Processor;
 
 use Brown298\DataTablesBundle\Model\RequestParameterBag;
 use Brown298\DataTablesBundle\Model\ResponseParameterBag;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\QueryBuilder;
 use Psr\Log\LoggerInterface;
 
@@ -62,8 +63,8 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
         } else {
             $responseParameters->setData($qb->getQuery()->getArrayResult());
         }
-        $total        = $this->getTotalRecords(clone($this->queryBuilder), $alias);
         $displayTotal = $this->getTotalRecords(clone($this->queryBuilder), $alias);
+        $total        = $this->getTotalRecords(clone($qb), $alias);
 
         $responseParameters->setTotal($total);
         $responseParameters->setDisplayTotal($displayTotal);
@@ -290,12 +291,19 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
      */
     public function getTotalRecords(QueryBuilder $qb, $alias)
     {
-        $qb->select(array("count({$alias})"))
-            ->setMaxResults(1);
+        $rsm    = new ResultSetMapping();
+        $rsm->addScalarResult('result','result');
 
-        $rawResult = $qb->getQuery()->getArrayResult();
+        $sql    = $qb->getQuery()->getSQL();
+        $query  = $qb->getEntityManager()->createNativeQuery(sprintf('select count(*) as result from (%s) as tb', $sql), $rsm);
+        $params = $qb->getParameters()->toArray();
+        $count  = 0;
+        foreach ($params as $value) {
+            $query->setParameter(++$count, $value->getValue());
+        }
 
-        return array_pop($rawResult[0]);
+        $rawResult = $query->getSingleResult();
+        return $rawResult['result'];
     }
 
     /**
