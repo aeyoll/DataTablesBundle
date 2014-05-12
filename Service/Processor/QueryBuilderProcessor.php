@@ -303,7 +303,7 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
         }
 
         $rawResult = $query->getSingleResult();
-        return $rawResult['result'];
+        return (isset($rawResult['result'])) ? $rawResult['result'] : 0;
     }
 
     /**
