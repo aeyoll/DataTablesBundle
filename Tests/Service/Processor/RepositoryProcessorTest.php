@@ -49,6 +49,16 @@ class RepositoryProcessorTest extends AbstractBaseTest
     protected $responseParameters;
 
     /**
+     * @var Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $arrayCollection;
+
+    /**
      * setUp
      */
     public function setUp()
@@ -61,6 +71,8 @@ class RepositoryProcessorTest extends AbstractBaseTest
         $this->query              = Phake::mock('Doctrine\ORM\AbstractQuery');
         $this->logger             = Phake::mock('Psr\Log\LoggerInterface');
         $this->repository         = Phake::mock('\Doctrine\ORM\EntityRepository');
+        $this->em                = Phake::mock('Doctrine\ORM\EntityManager');
+        $this->arrayCollection   = Phake::mock('Doctrine\Common\Collections\ArrayCollection');
 
         Phake::when($this->repository)->createQueryBuilder(Phake::anyParameters())->thenReturn($this->queryBuilder);
         Phake::when($this->queryBuilder)->getQuery(Phake::anyParameters())->thenReturn($this->query);
@@ -236,7 +248,14 @@ class RepositoryProcessorTest extends AbstractBaseTest
      */
     public function testProcessEmpty()
     {
+        Phake::when($this->queryBuilder)->getEntityManager()->thenReturn($this->em);
+        Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
+        Phake::when($this->em)->createNativeQuery(Phake::anyParameters())->thenReturn($this->query);
+        Phake::when($this->queryBuilder)->getParameters()->thenReturn($this->arrayCollection);
         Phake::when($this->query)->getArrayResult()->thenReturn(array(array(2)));
+        Phake::when($this->query)->getSingleResult()->thenReturn(array());
+        Phake::when($this->arrayCollection)->toArray()->thenReturn(array());
+
         $result = $this->service->process($this->responseParameters);
         Phake::verify($this->requestParameters, Phake::never())->setOffset(Phake::anyParameters());
         Phake::verify($this->requestParameters, Phake::never())->setDisplayLength(Phake::anyParameters());
@@ -248,7 +267,13 @@ class RepositoryProcessorTest extends AbstractBaseTest
      */
     public function testProcessOffset()
     {
+        Phake::when($this->queryBuilder)->getEntityManager()->thenReturn($this->em);
+        Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
+        Phake::when($this->em)->createNativeQuery(Phake::anyParameters())->thenReturn($this->query);
+        Phake::when($this->queryBuilder)->getParameters()->thenReturn($this->arrayCollection);
         Phake::when($this->query)->getArrayResult()->thenReturn(array(array(2)));
+        Phake::when($this->query)->getSingleResult()->thenReturn(array());
+        Phake::when($this->arrayCollection)->toArray()->thenReturn(array());
         $this->service->setOffset(2);
         $result = $this->service->process($this->responseParameters);
         Phake::verify($this->requestParameters)->setOffset(Phake::anyParameters());
@@ -258,7 +283,13 @@ class RepositoryProcessorTest extends AbstractBaseTest
     public function testProcessDisplayLength()
     {
         $this->service->setLimit(2);
+        Phake::when($this->queryBuilder)->getEntityManager()->thenReturn($this->em);
+        Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
+        Phake::when($this->em)->createNativeQuery(Phake::anyParameters())->thenReturn($this->query);
+        Phake::when($this->queryBuilder)->getParameters()->thenReturn($this->arrayCollection);
         Phake::when($this->query)->getArrayResult()->thenReturn(array(array(2)));
+        Phake::when($this->query)->getSingleResult()->thenReturn(array());
+        Phake::when($this->arrayCollection)->toArray()->thenReturn(array());
         $result = $this->service->process($this->responseParameters);
         Phake::verify($this->requestParameters, Phake::never())->setOffset(Phake::anyParameters());
         Phake::verify($this->requestParameters)->setDisplayLength(Phake::anyParameters());
