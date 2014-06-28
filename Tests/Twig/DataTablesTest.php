@@ -20,6 +20,25 @@ class DataTablesTest extends AbstractBaseTest
     private $environment;
 
     /**
+     * @Mock
+     * @var \Brown298\DataTablesBundle\Model\DataTable\DataTableInterface
+     */
+    protected $dataTable;
+
+    /**
+     * @Mock
+     * @var \Brown298\DataTablesBundle\MetaData\Column
+     */
+    protected $column;
+
+    /**
+     * @Mock
+     * @var \Brown298\DataTablesBundle\MetaData\Table
+     */
+    protected $table;
+
+
+    /**
      * @var \Brown298\DataTablesBundle\Twig\DataTables
      */
     protected $service;
@@ -176,6 +195,38 @@ class DataTablesTest extends AbstractBaseTest
         $this->assertArrayHasKey('script_template', $resultParams);
         $this->assertArrayHasKey('path', $resultParams);
     }
+    /**
+     * testAddDataTableJs
+     */
+    public function testAddDataTableJs()
+    {
+        $columns = array();
+        $params  = null;
+
+        $this->service->initRuntime($this->environment);
+        $this->service->addDataTableJs($columns, $params);
+        $resultParams = $this->getProtectedValue($this->service, 'params');
+
+        $this->assertArrayHasKey('table_template', $resultParams);
+        $this->assertArrayHasKey('script_template', $resultParams);
+        $this->assertArrayHasKey('path', $resultParams);
+    }
+    /**
+     * testAddDataTableHtml
+     */
+    public function testAddDataTableHtml()
+    {
+        $columns = array();
+        $params  = null;
+
+        $this->service->initRuntime($this->environment);
+        $this->service->addDataTableHtml($columns, $params);
+        $resultParams = $this->getProtectedValue($this->service, 'params');
+
+        $this->assertArrayHasKey('table_template', $resultParams);
+        $this->assertArrayHasKey('script_template', $resultParams);
+        $this->assertArrayHasKey('path', $resultParams);
+    }
 
     /**
      * testBuildJsParamsEmpty
@@ -266,5 +317,142 @@ class DataTablesTest extends AbstractBaseTest
     {
         $result = $this->callProtected($this->service, 'isJsonObject', array($object));
         $this->assertEquals($expectedResult, $result, 'Error: isJsonObject returned ' . ($result ? 'True':'False') . ' on ' . $object);
+    }
+
+    /**
+     * testAddDataTableGetsColumns
+     */
+    public function testAddDataTableGetsColumns()
+    {
+        $this->service->initRuntime($this->environment);
+
+        $this->service->addDataTable($this->dataTable);
+
+        Phake::verify($this->dataTable)->getColumns();
+        $this->assertEquals($this->dataTable, $this->getProtectedValue($this->service, 'dataTable'));
+    }
+
+    /**
+     * testBuildParamsCallsBuildDefaults
+     */
+    public function testBuildParamsCallsBuildDefaults()
+    {
+        $this->service = Phake::partialMock('\Brown298\DataTablesBundle\Twig\DataTables');
+        $this->service->initRuntime($this->environment);
+        Phake::when($this->service)->builParams()->thenReturn(null);
+
+        $this->service->addDataTable($this->dataTable);
+
+        Phake::verify($this->service)->buildDefaults();
+    }
+
+    /**
+     * @return array
+     */
+    public function buildColumnDefProvider()
+    {
+        return array(
+            array('sortable', 'bSort', true, false),
+            array('sortable', 'bSort', false, true),
+            array('searchable', 'bFilter', false, true),
+            array('searchable', 'bFilter', true, false),
+            array('visible', 'bVisible', false, true),
+            array('visible', 'bVisible', true, false),
+            array('class', 'sClass', 'testClass', true),
+            array('class', 'sClass', null, false),
+            array('width', 'sWidth', '20', true),
+            array('width', 'sWidth', null, false),
+            array('defaultSort', 'iDataSort', null, false),
+        );
+    }
+
+    /**
+     * testBuildColumnDef
+     *
+     * @param $fieldName
+     * @param $arrayName
+     * @param $value
+     * @param $isset
+     *
+     * @dataProvider buildColumnDefProvider
+     */
+    public function testBuildColumnDef($fieldName, $arrayName, $value, $isset)
+    {
+        $this->column->$fieldName = $value;
+
+        $result = $this->callProtected($this->service,'buildColumnDefs', array(array($this->column)));
+
+        if ($isset) {
+            $this->assertArrayHasKey($arrayName, $result[0]);
+            $this->assertEquals($value, $result[0][$arrayName]);
+        } else {
+            $this->assertNull($result[0]);
+        }
+    }
+
+    /**
+     * testbuildDefaultsCallsBuildColumns
+     */
+    public function testbuildDefaultsCallsBuildColumns()
+    {
+        $meta = array('table'=> $this->table, 'columns' => array($this->column));
+        $this->setProtectedValue($this->service,'dataTable', $this->dataTable);
+        Phake::when($this->dataTable)->getMetaData()->thenReturn($meta);
+
+        $this->callProtected($this->service, 'buildDefaults');
+
+        $defaults = $this->getProtectedValue($this->service, 'defaults');
+        $this->assertArrayHasKey('aoColumns', $defaults);
+    }
+
+    /**
+     * @return array
+     */
+    public function buildDefaultsSetsDefaultsProvider() {
+        return array(
+            array('id', 'id', rand(0,100)),
+            array('deferLoading', 'bDeferLoading', rand(0,100)),
+            array('serverSideProcessing', 'bServerSide', rand(0,100)),
+            array('info', 'bInfo', rand(0,100)),
+            array('changeLength', 'bLengthChange', rand(0,100)),
+            array('processing', 'bProcessing', rand(0,100)),
+            array('displayLength', 'iDisplayLength', rand(0,100)),
+            array('paginate', 'bPaginate', rand(0,100)),
+            array('sortable', 'bSort', rand(0,100)),
+            array('searchable', 'bFilter', rand(0,100)),
+            array('paginationType', 'sPaginationType', rand(0,100)),
+        );
+    }
+
+    /**
+     * @param $name
+     * @param $arrayName
+     * @param $value
+     * @dataProvider buildDefaultsSetsDefaultsProvider
+     */
+    public function testBuildDefaultsSetsDefaults($name, $arrayName, $value)
+    {
+        $this->table->$name = $value;
+        $meta = array('table'=> $this->table, 'columns' => array($this->column));
+        $this->setProtectedValue($this->service,'dataTable', $this->dataTable);
+        Phake::when($this->dataTable)->getMetaData()->thenReturn($meta);
+
+        $this->callProtected($this->service, 'buildDefaults');
+
+        $defaults = $this->getProtectedValue($this->service, 'defaults');
+        $this->assertEquals($value, $defaults[$arrayName]);
+    }
+
+    /**
+     * testBuildColumnDefsSetsIDataSort
+     */
+    public function testBuildColumnDefsSetsIDataSort()
+    {
+        $this->column->defaultSort = true;
+
+        $result = $this->callProtected($this->service,'buildColumnDefs', array(array($this->column)));
+
+        $this->assertArrayHasKey('iDataSort', $result[0]);
+        $this->assertEquals(0, $result[0]['iDataSort']);
     }
 } 

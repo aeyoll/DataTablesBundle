@@ -55,6 +55,16 @@ class ServerProcessServiceTest extends AbstractBaseTest
     protected $repository;
 
     /**
+     * @var Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $arrayCollection;
+
+    /**
      * setUp
      */
     public function setUp()
@@ -69,6 +79,8 @@ class ServerProcessServiceTest extends AbstractBaseTest
         $this->logger            = Phake::mock('Psr\Log\LoggerInterface');
         $this->processor         = Phake::mock('Brown298\DataTablesBundle\Service\Processor\ProcessorInterface');
         $this->repository        = Phake::mock('\Doctrine\ORM\EntityRepository');
+        $this->em                = Phake::mock('Doctrine\ORM\EntityManager');
+        $this->arrayCollection   = Phake::mock('Doctrine\Common\Collections\ArrayCollection');
 
         Phake::when($this->repository)->createQueryBuilder(Phake::anyParameters())->thenReturn($this->queryBuilder);
 
@@ -241,6 +253,13 @@ class ServerProcessServiceTest extends AbstractBaseTest
         Phake::when($this->queryBuilder)->select(Phake::anyParameters())->thenReturn($this->queryBuilder);
         Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
         Phake::when($this->query)->getArrayResult()->thenReturn(array())->thenReturn(array(array()));
+        Phake::when($this->queryBuilder)->getEntityManager()->thenReturn($this->em);
+        Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
+        Phake::when($this->em)->createNativeQuery(Phake::anyParameters())->thenReturn($this->query);
+        Phake::when($this->queryBuilder)->getParameters()->thenReturn($this->arrayCollection);
+        Phake::when($this->query)->getSingleResult()->thenReturn(array());
+        Phake::when($this->arrayCollection)->toArray()->thenReturn(array());
+
 
         $result = $this->service->process($dataFormatter);
 
@@ -292,6 +311,12 @@ class ServerProcessServiceTest extends AbstractBaseTest
         Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
         Phake::when($this->query)->getArrayResult()->thenReturn(array(array()));
         Phake::when($this->query)->getResult()->thenReturn(array());
+        Phake::when($this->queryBuilder)->getEntityManager()->thenReturn($this->em);
+        Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
+        Phake::when($this->em)->createNativeQuery(Phake::anyParameters())->thenReturn($this->query);
+        Phake::when($this->queryBuilder)->getParameters()->thenReturn($this->arrayCollection);
+        Phake::when($this->query)->getSingleResult()->thenReturn(array());
+        Phake::when($this->arrayCollection)->toArray()->thenReturn(array());
 
         $result = $this->service->process($dataFormatter, true);
 

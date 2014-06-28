@@ -1,6 +1,7 @@
 <?php
 namespace Brown298\DataTablesBundle\Model\DataTable;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
@@ -17,6 +18,11 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
      * @var QueryBuilder
      */
     protected $queryBuilder = null;
+
+    /**
+     * @var bool
+     */
+    public $hydrateObjects = false;
 
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -36,11 +42,23 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
     public function getData(Request $request, $dataFormatter = null)
     {
         $this->queryBuilder = $this->getQueryBuilder($request);
-        if ($this->queryBuilder == null) {
-            return null;
-        }
 
         return $this->getDataByQueryBuilder($request, $this->queryBuilder, $dataFormatter);
+    }
+
+    /**
+     * getObject Value
+     *
+     * allows for relations based on things like faq.createdBy.id
+     *
+     * @param $row
+     * @param $source
+     * @return string
+     */
+    protected function getObjectValue($row, $source)
+    {
+        /** @todo use querybuilder to determine values */
+        return parent::getObjectValue($row, $source);
     }
 
     /**
@@ -85,7 +103,7 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
      */
     public function execute($service, $formatter)
     {
-        return $service->process($formatter, false);
+        return $service->process($formatter, $this->hydrateObjects);
     }
 
     /**
@@ -104,13 +122,40 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
      * override this function to return a query builder
      *
      * @param Request $request
-     *
+     * @throws \RuntimeException
      * @return QueryBuilder|null
      */
-    public function getQueryBuilder(Request $request)
+    public function getQueryBuilder(Request $request = null)
     {
-        return $this->queryBuilder;
+        if ($this->queryBuilder != null) {
+            return $this->queryBuilder;
+        }
+
+        // use metadata if possbile
+        if (is_array($this->metaData) && isset($this->metaData['table']) && $this->metaData['table']->entity != null) {
+            if ($this->em == null) {
+                throw new \RuntimeException('You must provide an entity manger to use the DataTables Entity');
+            }
+
+            // generate via metadata if possible
+            $repo = $this->em->getRepository($this->metaData['table']->entity);
+
+            if ($this->metaData['table']->queryBuilder != null) {
+                $function = $this->metaData['table']->queryBuilder;
+
+                if(method_exists($repo, $function)) {
+                    return $repo->$function();
+                }
+            } else {
+                $tokens = explode('\\', $this->metaData['table']->entity);
+                $alias  = array_pop($tokens);
+                return $repo->createQueryBuilder($alias);
+            }
+        }
+
+        throw new \RuntimeException('Could not generate query builder for data table');
     }
+
 
     /**
      * @param EntityManager $em

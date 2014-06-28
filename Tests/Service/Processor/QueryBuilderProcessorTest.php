@@ -34,6 +34,16 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
     protected $logger;
 
     /**
+     * @var Doctrine\ORM\EntityManager
+     */
+    protected $em;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $arrayCollection;
+
+    /**
      * @var \Brown298\DataTablesBundle\Service\Processor\QueryBuilderProcessor
      */
     protected $service;
@@ -49,6 +59,8 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
         $this->query             = Phake::mock('Doctrine\ORM\AbstractQuery');
         $this->requestParameters = Phake::mock('Brown298\DataTablesBundle\Model\RequestParameterBag');
         $this->logger            = Phake::mock('Psr\Log\LoggerInterface');
+        $this->em                = Phake::mock('Doctrine\ORM\EntityManager');
+        $this->arrayCollection   = Phake::mock('Doctrine\Common\Collections\ArrayCollection');
 
         $this->service           = new QueryBuilderProcessor($this->queryBuilder, $this->requestParameters);
     }
@@ -186,13 +198,16 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
     public function testGetTotalRecords()
     {
         $expectedResults = 2;
+        Phake::when($this->queryBuilder)->getEntityManager()->thenReturn($this->em);
         Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
+        Phake::when($this->em)->createNativeQuery(Phake::anyParameters())->thenReturn($this->query);
+        Phake::when($this->queryBuilder)->getParameters()->thenReturn($this->arrayCollection);
         Phake::when($this->queryBuilder)->select(Phake::anyParameters())->thenReturn($this->queryBuilder);
-        Phake::when($this->query)->getArrayResult()->thenReturn(array(array($expectedResults)));
+        Phake::when($this->query)->getSingleResult()->thenReturn(array('result' => $expectedResults));
+        Phake::when($this->arrayCollection)->toArray()->thenReturn(array());
 
         $result = $this->service->getTotalRecords($this->queryBuilder, 's');
-        Phake::verify($this->queryBuilder)->select(array('count(s.id)'));
-        Phake::verify($this->queryBuilder)->setMaxResults(1);
+        Phake::verify($this->query)->getSingleResult();
 
         $this->assertEquals($expectedResults, $result);
     }
@@ -261,7 +276,7 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
         $this->assertEquals($this->queryBuilder, $result);
 
         // verify addSearch
-        Phake::verify($this->requestParameters)->getSearchColumns();
+        Phake::verify($this->requestParameters, Phake::atLeast(1))->getSearchColumns();
 
         // verify addOrder
         Phake::verify($this->requestParameters)->getSortingColumns();
@@ -300,7 +315,7 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
             'a.id' => 'ID',
         );
         Phake::when($this->requestParameters)->getSearchString()->thenReturn('test');
-        Phake::when($this->requestParameters)->getColumns()->thenReturn($columns);
+        Phake::when($this->requestParameters)->getSearchColumns()->thenReturn($columns);
         $this->setProtectedValue($this->service, 'requestParameters', $this->requestParameters);
         $this->service->setLogger($this->logger);
 
@@ -322,7 +337,7 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
             'a.name' => 'Name',
         );
         Phake::when($this->requestParameters)->getSearchString()->thenReturn('test');
-        Phake::when($this->requestParameters)->getColumns()->thenReturn($columns);
+        Phake::when($this->requestParameters)->getSearchColumns()->thenReturn($columns);
         $this->setProtectedValue($this->service, 'requestParameters', $this->requestParameters);
         $this->service->setLogger($this->logger);
 
@@ -340,11 +355,19 @@ class QueryBuilderProcessorTest extends AbstractBaseTest
      */
     public function testProcessCreatesResponseParameterBag()
     {
+        Phake::when($this->queryBuilder)->getEntityManager()->thenReturn($this->em);
         Phake::when($this->queryBuilder)->getQuery()->thenReturn($this->query);
+        Phake::when($this->em)->createNativeQuery(Phake::anyParameters())->thenReturn($this->query);
+        Phake::when($this->queryBuilder)->getParameters()->thenReturn($this->arrayCollection);
         Phake::when($this->query)->getResult()->thenReturn(array());
         Phake::when($this->queryBuilder)->select(Phake::anyParameters())->thenReturn($this->queryBuilder);
         Phake::when($this->query)->getArrayResult()->thenReturn(array(array()));
+        Phake::when($this->query)->getSingleResult()->thenReturn(array());
+        Phake::when($this->arrayCollection)->toArray()->thenReturn(array());
+
         $result = $this->service->process();
+        Phake::verify($this->query, Phake::atLeast(2))->getSingleResult();
+
         $this->assertInstanceOf('Brown298\DataTablesBundle\Model\ResponseParameterBag', $result);
     }
 }
