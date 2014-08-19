@@ -269,7 +269,11 @@ class DataTables extends \Twig_Extension
 
             if ($column->defaultSort) {
                 $data['iDataSort'] = $count;
-            }
+	    }
+
+            if ($column->stype != null) {
+                $data['sType'] = $column->stype;
+	    }
 
             if (!empty($data)) {
                 $results[] = $data;
