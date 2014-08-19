@@ -248,11 +248,11 @@ class DataTables extends \Twig_Extension
             $data = array();
 
             if ($column->sortable == false) {
-                $data['bSort']    = false;
+                $data['bSortable']    = false;
             }
 
             if ($column->searchable == false) {
-                $data['bFilter']    = false;
+                $data['bSearchable']    = false;
             }
 
             if ($column->visible == false) {
