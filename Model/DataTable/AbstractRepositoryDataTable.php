@@ -145,4 +145,4 @@ class AbstractRepositoryDataTable extends AbstractQueryBuilderDataTable implemen
     {
         return $this->repository;
     }
-} 
+}

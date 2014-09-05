@@ -143,6 +143,4 @@ class YmlTableBuilder extends AbstractTableBuilder implements TableBuilderInterf
             )
         );
     }
-
-
 }

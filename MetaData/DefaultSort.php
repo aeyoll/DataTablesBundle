@@ -10,6 +10,7 @@ namespace Brown298\DataTablesBundle\MetaData;
  * @Annotation
  * @Target("PROPERTY")
  */
-class DefaultSort {
+class DefaultSort
+{
 
 }

@@ -170,4 +170,4 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
     {
         return $this->em;
     }
-} 
+}

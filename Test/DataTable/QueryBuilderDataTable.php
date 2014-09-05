@@ -13,4 +13,4 @@ use Brown298\DataTablesBundle\Model\DataTable\QueryBuilderDataTableInterface;
 class QueryBuilderDataTable extends AbstractQueryBuilderDataTable implements QueryBuilderDataTableInterface
 {
 
-} 
+}

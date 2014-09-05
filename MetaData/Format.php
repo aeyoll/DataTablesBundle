@@ -12,7 +12,6 @@ namespace Brown298\DataTablesBundle\MetaData;
  */
 class Format
 {
-
     /**
      * @var array
      */
