@@ -56,7 +56,6 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
      */
     protected function getObjectValue($row, $source)
     {
-        /** @todo use querybuilder to determine values */
         return parent::getObjectValue($row, $source);
     }
 

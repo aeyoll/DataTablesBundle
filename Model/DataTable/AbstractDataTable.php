@@ -3,7 +3,6 @@ namespace Brown298\DataTablesBundle\Model\DataTable;
 
 use Brown298\DataTablesBundle\Model\Cache\CacheBagInterface;
 use Doctrine\Common\Inflector\Inflector;
-use Metadata\Cache\CacheInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -187,7 +186,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
     public function getColumnRendering($row)
     {
         $result   = array();
-        if ($this->cacheBag != null) { $d = serialize($row);
+        if ($this->cacheBag != null) {
             $key = $this->cacheBag->getKeyName('row_data', array(hash('md4', serialize($row))));
             if ($result = $this->cacheBag->fetch($key)) {
                 $result = unserialize($result);

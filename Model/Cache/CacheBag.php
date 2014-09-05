@@ -2,8 +2,6 @@
 namespace Brown298\DataTablesBundle\Model\Cache;
 
 use Doctrine\Common\Cache\Cache;
-use TSS\BlackboxBundle\Entity\Target;
-use TSS\LenderHubBundle\Entity\User;
 
 /**
  * Class CacheBag
