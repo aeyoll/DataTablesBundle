@@ -139,11 +139,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
             }
 
             foreach($column->format->dataFields as $name => $source) {
-                if (preg_match("/^'.*'$/", $source)) {
-                    $args[$name] = substr($source, 1, strlen($source)-2);
-                } else {
-                    $args[$name] = $this->getDataValue($row, $source);
-                }
+                $args[$name] = $this->getColumnArg($row, $source);
             }
 
             if ($column->format->template != null) {
@@ -157,6 +153,31 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
         }
 
         return $result;
+    }
+
+    /**
+     * getColumnArg
+     *
+     * @param $row
+     * @param $source
+     *
+     * @return array|null|string
+     */
+    protected function getColumnArg($row, $source)
+    {
+        if (is_array($source)) { // recursively handle array parameters
+            $result = array();
+
+            foreach($source as $n=>$v) {
+                $result[$n] = $this->getDataValue($row, $v);
+            }
+
+            return $result;
+        } elseif (preg_match("/^'.*'$/", $source)) {
+            return substr($source, 1, strlen($source)-2);
+        } else {
+            return $this->getDataValue($row, $source);
+        }
     }
 
     /**

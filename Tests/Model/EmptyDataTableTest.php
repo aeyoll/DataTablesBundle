@@ -43,6 +43,16 @@ class EmptyDataTableTest extends AbstractBaseTest
     protected $column;
 
     /**
+     * @var \Brown298\DataTablesBundle\MetaData\Format
+     */
+    protected $format;
+
+    /**
+     * @var \Symfony\Component\Templating\EngineInterface
+     */
+    protected $renderer;
+
+    /**
      * setUp
      */
     public function setUp()
@@ -53,6 +63,8 @@ class EmptyDataTableTest extends AbstractBaseTest
         $this->dataTablesService = Phake::mock('Brown298\DataTablesBundle\Service\ServerProcessService');
         $this->logger            = Phake::mock('\Psr\Log\LoggerInterface');
         $this->column            = Phake::mock('\Brown298\DataTablesBundle\MetaData\Column');
+        $this->format            = Phake::mock('\Brown298\DataTablesBundle\MetaData\Column');
+        $this->renderer          = Phake::mock('\Symfony\Component\Templating\EngineInterface');
 
         Phake::when($this->container)->get('logger')->thenReturn($this->logger);
 
@@ -295,6 +307,44 @@ class EmptyDataTableTest extends AbstractBaseTest
         }
 
         $this->assertEquals($expectedResults, $result);
+    }
+
+    /**
+     * testGetColumnRenderedArrayParameters
+     *
+     * tests that passing in a parameter that has a multi dimensional array works
+     *
+     * ex:
+     * @DataTable\Format(dataFields={"route":"users_show", "params" : { "id":"entity.id" },
+     *                  "value":"entity.username" }, template="::Datatable/link.html.twig")
+     *
+     * <a href='{{ path(route, params) }}'>{{ value }}</a>
+     */
+    public function testGetColumnRenderedArrayParameters()
+    {
+        $row            = new test();
+        $column         = $this->column;
+        $column->format = $this->format;
+        $expectedResult = 'test';
+        $expectedArgs   = array(
+            'params' => array(
+                'id'=> 'Unknown',
+            ),
+            'value' => 'Unknown',
+        );
+
+        $this->format->dataFields = json_decode('{"params": {"id": "entity.id" }, "value":"entity.id"}', true);
+        $this->format->template   = "{{ params|dump }}";
+
+        Phake::when($this->container)->get('templating')->thenReturn($this->renderer);
+        Phake::when($this->renderer)->render(Phake::anyParameters())->thenReturn($expectedResult);
+        $this->dataTable->setContainer($this->container);
+
+        $result = $this->callProtected($this->dataTable,'getColumnRendered', array('row'=>$row, 'column'=>$column));
+
+        $this->assertEquals($expectedResult, $result);
+        Phake::verify($this->renderer)->render($this->format->template, Phake::capture($args));
+        $this->assertEquals($expectedArgs, $args);
     }
 }
 
