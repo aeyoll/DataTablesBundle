@@ -165,7 +165,7 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
     }
 
     /**
-     * @return \Brown298\DtTestBundle\Model\Doctrine\ORM\EntityManager
+     * @return Doctrine\ORM\EntityManager
      */
     public function getEm()
     {

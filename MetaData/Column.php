@@ -56,4 +56,9 @@ class Column
      * @var
      */
     public $format = null;
+    
+    /**
+     * @var string to apply sort specific data types
+     */
+    public $stype;
 }
