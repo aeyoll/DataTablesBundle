@@ -8,7 +8,6 @@ use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
-use Symfony\Component\Security\Core\Util\ClassUtils;
 use Symfony\Component\Yaml\Parser;
 use Doctrine\Common\Annotations\FileCacheReader;
 

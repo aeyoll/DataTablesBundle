@@ -421,6 +421,4 @@ class RequestParameterBag extends AbstractParamterBag
     {
         return $this->allowRegex;
     }
-
-
 }

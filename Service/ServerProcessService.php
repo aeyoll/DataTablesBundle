@@ -177,5 +177,4 @@ class ServerProcessService extends AbstractServerProcessor
 
         $this->processor->buildFindBy($criteria, $orderBy, $limit, $offset);
     }
-
 }

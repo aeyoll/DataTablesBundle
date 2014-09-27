@@ -51,4 +51,4 @@ interface QueryBuilderDataTableInterface extends DataTableInterface
      * @return EntityManger
      */
     public function getEm();
-} 
+}

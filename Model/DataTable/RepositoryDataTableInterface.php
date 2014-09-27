@@ -10,4 +10,4 @@ namespace Brown298\DataTablesBundle\Model\DataTable;
 interface RepositoryDataTableInterface extends QueryBuilderDataTableInterface
 {
 
-} 
+}

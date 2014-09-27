@@ -78,4 +78,4 @@ abstract class AbstractBaseTest extends PHPUnit_Framework_TestCase
         );
         return $result;
     }
-} 
+}

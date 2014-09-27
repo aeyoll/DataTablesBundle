@@ -21,7 +21,7 @@
         "php":                          ">=5.3.3",
         "doctrine/orm":                 "~2.2,>=2.2.3",
         "datatables/datatables":        "~1.10.2",
-        "symfony/symfony":              ">=2.2.0",
+        "symfony/symfony":              ">=2.2.0,!=2.5.2",
         "twig/twig":                    "~1.13@dev"
     },
     "require-dev": {

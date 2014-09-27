@@ -153,6 +153,4 @@ abstract class AbstractServerProcessor
     {
         return $this->processor;
     }
-
-
 }

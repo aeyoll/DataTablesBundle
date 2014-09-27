@@ -1,7 +1,11 @@
 <?php
 namespace Brown298\DataTablesBundle\Service;
 
-
+/**
+ * Class AbstractTableBuilder
+ *
+ * @package Brown298\DataTablesBundle\Service
+ */
 abstract class AbstractTableBuilder implements TableBuilderInterface
 {
 
@@ -124,5 +128,4 @@ abstract class AbstractTableBuilder implements TableBuilderInterface
     {
         $this->em = $em;
     }
-
 }

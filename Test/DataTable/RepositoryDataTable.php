@@ -13,4 +13,4 @@ use Brown298\DataTablesBundle\Model\DataTable\RepositoryDataTableInterface;
 class RepositoryDataTable extends AbstractRepositoryDataTable implements RepositoryDataTableInterface
 {
 
-} 
+}

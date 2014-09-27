@@ -263,7 +263,4 @@ class RepositoryProcessor extends QueryBuilderProcessor implements ProcessorInte
     {
         return $this->orderBy;
     }
-
-
-
 }

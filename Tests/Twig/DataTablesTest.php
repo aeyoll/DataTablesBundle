@@ -352,10 +352,10 @@ class DataTablesTest extends AbstractBaseTest
     public function buildColumnDefProvider()
     {
         return array(
-            array('sortable', 'bSort', true, false),
-            array('sortable', 'bSort', false, true),
-            array('searchable', 'bFilter', false, true),
-            array('searchable', 'bFilter', true, false),
+            array('sortable', 'bSortable', true, false),
+            array('sortable', 'bSortable', false, true),
+            array('searchable', 'bSearchable', false, true),
+            array('searchable', 'bSearchable', true, false),
             array('visible', 'bVisible', false, true),
             array('visible', 'bVisible', true, false),
             array('class', 'sClass', 'testClass', true),
