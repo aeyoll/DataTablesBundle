@@ -3,6 +3,7 @@ namespace Brown298\DataTablesBundle\Model\DataTable;
 
 use Brown298\DataTablesBundle\Model\Cache\CacheBagInterface;
 use Doctrine\Common\Inflector\Inflector;
+use Doctrine\ORM\PersistentCollection;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -252,9 +253,10 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
                 $sub = $this->getObjectValue($row, implode('.', $tokens));
                 if (is_object($sub) && method_exists($sub,$name)) {
                     $result = $sub->$name();
-                } elseif (is_array($sub)) {
+                } elseif (is_array($sub) || $sub instanceof PersistentCollection) {
                     $result          = array();
                     $remainingTokens =  explode('.', $source);
+                    array_shift($remainingTokens);
                     array_shift($remainingTokens);
                     foreach($sub as $d) {
                         $result[] = $this->getObjectValue($d, implode('.', $remainingTokens));
@@ -263,6 +265,13 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
             } else if($tokenCount == 0) {
                 $result = $row;
             }
+        }
+
+        if ($result == 'Unknown') {
+            var_dump(get_class($row));
+            var_dump($name);
+            var_dump($source);
+            die();
         }
 
         return $result;
