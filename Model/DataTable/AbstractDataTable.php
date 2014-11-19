@@ -267,13 +267,6 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
             }
         }
 
-        if ($result == 'Unknown') {
-            var_dump(get_class($row));
-            var_dump($name);
-            var_dump($source);
-            die();
-        }
-
         return $result;
     }
 
