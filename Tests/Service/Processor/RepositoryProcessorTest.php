@@ -3,7 +3,7 @@ namespace Brown298\DataTablesBundle\Tests\Service\Processor;
 
 use Brown298\DataTablesBundle\Service\Processor\RepositoryProcessor;
 use \Phake;
-use \Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class RepositoryProcessorTest
@@ -11,7 +11,7 @@ use \Brown298\DataTablesBundle\Test\AbstractBaseTest;
  * @package Brown298\DataTablesBundle\Tests\Service\Processor
  * @author  John Brown <brown.john@gmail.com>
  */
-class RepositoryProcessorTest extends AbstractBaseTest
+class RepositoryProcessorTest extends AbstractTest
 {
     /**
      * @var Brown298\DataTablesBundle\Model\RequestParameterBag

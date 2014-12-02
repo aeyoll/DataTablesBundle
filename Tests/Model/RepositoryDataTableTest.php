@@ -3,7 +3,7 @@ namespace Brown298\DataTablesBundle\Tests\Model;
 
 use Brown298\DataTablesBundle\Test\DataTable\RepositoryDataTable;
 use Phake;
-use Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class RepositoryDataTableTest
@@ -11,7 +11,7 @@ use Brown298\DataTablesBundle\Test\AbstractBaseTest;
  * @package Brown298\DataTablesBundle\Tests\Model
  * @author  John Brown <brown.john@gmail.com>
  */
-class RepositoryDataTableTest extends AbstractBaseTest
+class RepositoryDataTableTest extends AbstractTest
 {
     /**
      * @Mock

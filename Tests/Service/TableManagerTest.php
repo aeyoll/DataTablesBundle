@@ -3,14 +3,14 @@ namespace Brown298\DataTablesBundle\Tests\Service;
 
 use Brown298\DataTablesBundle\Service\TableManager;
 use Phake;
-use Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class TableManagerTest
  * @package Brown298\DataTablesBundle\Tests\Service
  * @author  John Brown <brown.john@gmail.com>
  */
-class TableManagerTest extends AbstractBaseTest
+class TableManagerTest extends AbstractTest
 {
     /**
      * @var \Doctrine\ORM\EntityManger

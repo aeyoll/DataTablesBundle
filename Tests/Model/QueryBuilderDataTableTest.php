@@ -2,7 +2,7 @@
 namespace Brown298\DataTablesBundle\Tests\Model;
 
 use Phake;
-use Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 use Brown298\DataTablesBundle\Test\DataTable\QueryBuilderDataTable;
 
 /**
@@ -11,7 +11,7 @@ use Brown298\DataTablesBundle\Test\DataTable\QueryBuilderDataTable;
  * @package Brown298\DataTablesBundle\Tests\Model
  * @author  John Brown <brown.john@gmail.com>
  */
-class QueryBuilderDataTableTest extends AbstractBaseTest
+class QueryBuilderDataTableTest extends AbstractTest
 {
     /**
      * @Mock

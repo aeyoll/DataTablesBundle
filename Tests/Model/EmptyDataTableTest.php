@@ -3,14 +3,14 @@ namespace Brown298\DataTablesBundle\Tests\Model;
 
 use Brown298\DataTablesBundle\Test\DataTable\EmptyDataTable;
 use Phake;
-use Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class EmptyDataTableTest
  * @package Brown298\DataTablesBundle\Tests\Model
  * @author  John Brown <brown.john@gmail.com>
  */
-class EmptyDataTableTest extends AbstractBaseTest
+class EmptyDataTableTest extends AbstractTest
 {
     /**
      * @var Symfony\Component\DependencyInjection\ContainerInterface

@@ -2,7 +2,7 @@
 namespace Brown298\DataTablesBundle\Tests\Model;
 
 use Brown298\DataTablesBundle\Model\ResponseParameterBag;
-use Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 use Phake;
 
 /**
@@ -11,7 +11,7 @@ use Phake;
  * @package Brown298\DataTablesBundle\Tests\Model
  * @author  John Brown <brown.john@gmail.com>
  */
-class ResponseParameterBagTest extends AbstractBaseTest
+class ResponseParameterBagTest extends AbstractTest
 {
     /**
      * @var Brown298\DataTablesBundle\Model\RequestParameterBag
