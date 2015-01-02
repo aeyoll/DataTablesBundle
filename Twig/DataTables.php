@@ -100,6 +100,31 @@ class DataTables extends \Twig_Extension
     }
 
     /**
+     * convertParamToFunctions
+     *
+     * @param $data
+     * @param $valueArray
+     * @param $replaceKeys
+     *
+     * @return mixed
+     */
+    protected function convertParamToFunctions($data, &$valueArray, &$replaceKeys)
+    {
+        foreach($data as $key => &$value) {
+            if (is_array($value) || is_object($value)) {
+                $value = $this->convertParamToFunctions($value, $valueArray, $replaceKeys);
+            } elseif (preg_match('/^function.*/', $value)
+                || $this->isJsonObject($value)) {
+                $valueArray[]  = $value;
+                $value         = "%{$key}%";
+                $replaceKeys[] = "\"{$value}\"";
+            }
+        }
+
+        return $data;
+    }
+
+    /**
      * convertFunctions
      *
      * @param $rawJson
@@ -112,14 +137,7 @@ class DataTables extends \Twig_Extension
         $valueArray  = array();
         $replaceKeys = array();
 
-        foreach($data as $key => &$value) {
-            if (preg_match('/^function.*/', $value)
-                || $this->isJsonObject($value)) {
-                $valueArray[]  = $value;
-                $value         = "%{$key}%";
-                $replaceKeys[] = "\"{$value}\"";
-            }
-        }
+        $data = $this->convertParamToFunctions($data, $valueArray, $replaceKeys);
 
         $resultJson = json_encode($data);
         $resultJson = str_replace($replaceKeys, $valueArray, $resultJson);
@@ -352,7 +370,7 @@ class DataTables extends \Twig_Extension
         // build the final params
         foreach ($keys as $key) {
             if (isset($this->params[$key]) || isset($this->params['customParams'][$key])) {
-                if (preg_match('/^aa.+/', $key) || preg_match('/^ao.+/', $key)) {
+                if (isset($this->params[$key]) && (preg_match('/^aa.+/', $key) || preg_match('/^ao.+/', $key))) {
                     $results[$key] = json_encode($this->params[$key]);
                 } elseif(isset($this->params['customParams'][$key])) {
                     $results[$key] = $this->params['customParams'][$key];
