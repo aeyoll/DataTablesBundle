@@ -17,7 +17,7 @@
             <tr>{% spaceless %}
 
                 {% for column in columns %}
-                <th class="header-filter" id="col_{{ colCount }}">{% set colCount=colCount+1 %}
+                <th class="header-filter {{ column|lower }}_header" id="col_{{ colCount }}">{% set colCount=colCount+1 %}
                     <span class="anchor {{ column }}">{{ column }}</span><span class="sort icon">Sort</span>
                     <span class="currentFilters"></span>
                     {% set filter = tableForms.headerFilter(column,filterForm) %}
