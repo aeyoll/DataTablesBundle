@@ -240,7 +240,8 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
      */
     protected function getObjectValue($row, $source)
     {
-        $result      = 'Unknown';
+        $translator  = $this->container->get('translator');
+        $result      = $translator->trans('data_tables.unknown_value');
         $tokens      = explode('.', $source);
         $currentName = array_pop($tokens);
         $name        = 'get' . Inflector::classify($currentName);
