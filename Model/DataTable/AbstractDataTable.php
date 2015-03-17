@@ -213,16 +213,17 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
      */
     protected function getDataValue($row, $source)
     {
+        $translator  = $this->container->get('translator');
         $result = null;
         if (is_object($row)) {
             $result = $this->getObjectValue($row, $source);
-        } else if(is_array($row)) {
+        } elseif (is_array($row)) {
             $tokens  = explode('.', $source);
             $current = array_pop($tokens);
             if (isset($row[$current])) {
                 $result = $row[$current];
             } else {
-                $result = 'Unknown Value at ' . $current;
+                $result = $translator->trans('data_tables.unknown_value_at', array('%current%' => $current));
             }
         }
 
@@ -240,7 +241,8 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
      */
     protected function getObjectValue($row, $source)
     {
-        $result      = 'Unknown';
+        $translator  = $this->container->get('translator');
+        $result      = $translator->trans('data_tables.unknown_value');
         $tokens      = explode('.', $source);
         $currentName = array_pop($tokens);
         $name        = 'get' . Inflector::classify($currentName);
@@ -251,18 +253,18 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
         } else {
             if ($tokenCount > 1) {
                 $sub = $this->getObjectValue($row, implode('.', $tokens));
-                if (is_object($sub) && method_exists($sub,$name)) {
+                if (is_object($sub) && method_exists($sub, $name)) {
                     $result = $sub->$name();
                 } elseif (is_array($sub) || $sub instanceof PersistentCollection) {
                     $result          = array();
                     $remainingTokens =  explode('.', $source);
                     array_shift($remainingTokens);
                     array_shift($remainingTokens);
-                    foreach($sub as $d) {
+                    foreach ($sub as $d) {
                         $result[] = $this->getObjectValue($d, implode('.', $remainingTokens));
                     }
                 }
-            } else if($tokenCount == 0) {
+            } elseif ($tokenCount == 0) {
                 $result = $row;
             }
         }
