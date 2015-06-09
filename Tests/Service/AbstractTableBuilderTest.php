@@ -4,14 +4,14 @@ namespace Brown298\DataTablesBundle\Tests\Service;
 use Brown298\DataTablesBundle\Service\AbstractTableBuilder;
 use Brown298\DataTablesBundle\Service\TableBuilderInterface;
 use \Phake;
-use \Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class AbstractTableBuilderTest
  * @package Brown298\DataTablesBundle\Tests\Service
  * @author  John Brown <brown.john@gmail.com>
  */
-class AbstractTableBuilderTest extends AbstractBaseTest
+class AbstractTableBuilderTest extends AbstractTest
 {
 
     /**

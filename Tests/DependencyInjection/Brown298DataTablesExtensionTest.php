@@ -3,14 +3,14 @@ namespace Brown298\DataTablesBundle\Test\DependencyInjection;
 
 use Brown298\DataTablesBundle\DependencyInjection\Brown298DataTablesExtension;
 use Phake;
-use Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class Brown298DataTablesExtensionTest
  * @package Brown298\DataTablesBundle\Test\DependencyInjection
  * @author  John Brown <brown.john@gmail.com>
  */
-class Brown298DataTablesExtensionTest extends AbstractBaseTest
+class Brown298DataTablesExtensionTest extends AbstractTest
 {
 
     /**

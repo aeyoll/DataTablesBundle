@@ -1,7 +1,7 @@
 <?php
 namespace Brown298\DataTablesBundle\Tests\Twig;
 
-use \Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 use \Brown298\DataTablesBundle\Twig\DataTables;
 use \Phake;
 
@@ -11,7 +11,7 @@ use \Phake;
  * @package Brown298\DataTablesBundle\Tests\Twig
  * @author  John Brown <brown.john@gmail.com>
  */
-class DataTablesTest extends AbstractBaseTest
+class DataTablesTest extends AbstractTest
 {
     /**
      * @Mock

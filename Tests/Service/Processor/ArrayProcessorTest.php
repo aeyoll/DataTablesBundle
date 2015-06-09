@@ -3,14 +3,14 @@ namespace Brown298\DataTablesBundle\Tests\Service\Processor;
 
 use Brown298\DataTablesBundle\Service\Processor\ArrayProcessor;
 use \Phake;
-use \Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class ArrayProcessorTest
  * @package Brown298\DataTablesBundle\Tests\Service\Processor
  * @author  John Brown <brown.john@gmail.com>
  */
-class ArrayProcessorTest extends AbstractBaseTest
+class ArrayProcessorTest extends AbstractTest
 {
 
     /**

@@ -3,7 +3,7 @@ namespace Brown298\DataTablesBundle\Tests\Service;
 
 use \Brown298\DataTablesBundle\Service\ServerProcessService;
 use \Phake;
-use \Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class ServerProcessServiceTest
@@ -11,7 +11,7 @@ use \Brown298\DataTablesBundle\Test\AbstractBaseTest;
  * @package Brown298\DataTablesBundle\Tests\Service
  * @author  John Brown <brown.john@gmail.com>
  */
-class ServerProcessServiceTest extends AbstractBaseTest
+class ServerProcessServiceTest extends AbstractTest
 {
 
     /**

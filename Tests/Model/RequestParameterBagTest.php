@@ -3,7 +3,7 @@ namespace Brown298\DataTablesBundle\Tests\Model;
 
 use Brown298\DataTablesBundle\Model\RequestParameterBag;
 use Phake;
-use Brown298\DataTablesBundle\Test\AbstractBaseTest;
+use \Brown298\TestExtension\Test\AbstractTest;
 
 /**
  * Class RequestParameterBagTest
@@ -11,7 +11,7 @@ use Brown298\DataTablesBundle\Test\AbstractBaseTest;
  * @package Brown298\DataTablesBundle\Tests\Model
  * @author  John Brown <brown.john@gmail.com>
  */
-class RequestParameterBagTest extends AbstractBaseTest
+class RequestParameterBagTest extends AbstractTest
 {
 
     /**
