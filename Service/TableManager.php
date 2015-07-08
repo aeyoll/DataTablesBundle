@@ -157,7 +157,7 @@ class TableManager
      * getTable
      *
      * @param $id
-     * @return null
+     * @return DataTableInterface
      * @throws \Symfony\Component\Process\Exception\InvalidArgumentException
      */
     public function getTable($id) {
@@ -195,8 +195,6 @@ class TableManager
         } else {
             Throw new InvalidArgumentException('DataTable ' . $id . ' does not exist');
         }
-
-        return null;
     }
 
     /**
