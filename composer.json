@@ -4,7 +4,7 @@
     "homepage": "http://code.rbsolutions.us/datatables/",
     "description": "Adds DataTables functionality to Symfony2",
     "keywords": ["symfony2","datatables"],
-    "license": "LGPL-3.0+",
+    "license": "BSD",
     "repositories": [
         {
             "type": "vcs",
