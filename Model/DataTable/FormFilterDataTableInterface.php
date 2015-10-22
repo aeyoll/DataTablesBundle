@@ -37,4 +37,4 @@ interface FormFilterDataTableInterface
      * @return mixed
      */
     public function setFormFactory(FormFactoryInterface $formFactory = null);
-} 
+}
