@@ -128,12 +128,12 @@ class RepositoryProcessor extends QueryBuilderProcessor implements ProcessorInte
     public function process(ResponseParameterBag $responseParameters = null, $getEntity = false)
     {
         // add the offset
-        if ($this->offset != null) {
+        if ($this->offset !== null) {
             $this->requestParameters->setOffset($this->getOffset());
         }
 
         // add the limit
-        if ($this->limit != null) {
+        if ($this->limit !== null) {
             $this->requestParameters->setDisplayLength($this->limit);
         }
 
@@ -153,7 +153,7 @@ class RepositoryProcessor extends QueryBuilderProcessor implements ProcessorInte
      */
     protected function addOrdering(array $orderBy = null)
     {
-        if ($orderBy != null) {
+        if ($orderBy !== null) {
             foreach ($orderBy as $col => $dir) {
                 $this->queryBuilder->addOrderBy($col, $dir);
             }

@@ -91,6 +91,12 @@ class QueryBuilderDataTableTest extends AbstractTest
     protected $table;
 
     /**
+     * @Mock
+     * @var \Symfony\Component\Translation\Translator
+     */
+    protected $translation;
+
+    /**
      * setUp
      *
      */
@@ -299,6 +305,8 @@ class QueryBuilderDataTableTest extends AbstractTest
         $expectedResult = array();
         $row            = $expectedResult;
         $source         = '';
+
+        Phake::when($this->container)->get('translator')->thenReturn($this->translation);
 
         $result = $this->callProtected($this->dataTable, 'getObjectValue', array($row, $source));
 

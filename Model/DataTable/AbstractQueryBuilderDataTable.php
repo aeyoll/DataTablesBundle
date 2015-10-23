@@ -80,12 +80,12 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
             $service->setLogger($logger);
         }
 
-        if ($service->getRequest() == null) {
+        if ($service->getRequest() === null) {
             $service->setRequest($request);
         }
 
         $service->setQueryBuilder($qb);
-        if ($service->getColumns() == null || count($service->getColumns()) != count($this->columns)) {
+        if ($service->getColumns() === null || count($service->getColumns()) !== count($this->columns)) {
             $service->setColumns($this->columns);
         }
 
@@ -130,8 +130,8 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
         }
 
         // use metadata if possbile
-        if (is_array($this->metaData) && isset($this->metaData['table']) && $this->metaData['table']->entity != null) {
-            if ($this->em == null) {
+        if (is_array($this->metaData) && isset($this->metaData['table']) && $this->metaData['table']->entity !== null) {
+            if ($this->em === null) {
                 throw new \RuntimeException('You must provide an entity manger to use the DataTables Entity');
             }
 

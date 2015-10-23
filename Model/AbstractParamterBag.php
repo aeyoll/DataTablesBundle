@@ -44,7 +44,7 @@ abstract class AbstractParamterBag extends ParameterBag
 
         $const = $this->parameterNames[$name]['const'];
 
-        if (stripos($const, '%') != false) {
+        if (stripos($const, '%') !== false) {
             $const = sprintf($const, $id);
         }
         return $this->get($const, $default);
@@ -61,7 +61,7 @@ abstract class AbstractParamterBag extends ParameterBag
     {
         $const = $this->parameterNames[$name]['const'];
 
-        if (stripos($const, '%') != false) {
+        if (stripos($const, '%') !== false) {
             $const = sprintf($const, $id);
         }
 

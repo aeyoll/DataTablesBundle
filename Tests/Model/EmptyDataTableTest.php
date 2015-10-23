@@ -53,6 +53,11 @@ class EmptyDataTableTest extends AbstractTest
     protected $renderer;
 
     /**
+     * @var \Symfony\Component\Translation\Translator
+     */
+    protected $translation;
+
+    /**
      * setUp
      */
     public function setUp()
@@ -65,6 +70,7 @@ class EmptyDataTableTest extends AbstractTest
         $this->column            = Phake::mock('\Brown298\DataTablesBundle\MetaData\Column');
         $this->format            = Phake::mock('\Brown298\DataTablesBundle\MetaData\Column');
         $this->renderer          = Phake::mock('\Symfony\Component\Templating\EngineInterface');
+        $this->translation       = Phake::mock('\Symfony\Component\Translation\Translator');
 
         Phake::when($this->container)->get('logger')->thenReturn($this->logger);
 
@@ -194,6 +200,10 @@ class EmptyDataTableTest extends AbstractTest
     {
         $row = array();
         $expectedResult = 'Unknown Value at test';
+
+        $this->dataTable->setContainer($this->container);
+        Phake::when($this->container)->get('translator')->thenReturn($this->translation);
+        Phake::when($this->translation)->trans(Phake::anyParameters())->thenReturn($expectedResult);
 
         $result = $this->callProtected($this->dataTable,'getDataValue', array($row, 'data.test'));
 
@@ -337,6 +347,8 @@ class EmptyDataTableTest extends AbstractTest
         $this->format->template   = "{{ params|dump }}";
 
         Phake::when($this->container)->get('templating')->thenReturn($this->renderer);
+        Phake::when($this->container)->get('translator')->thenReturn($this->translation);
+        Phake::when($this->translation)->trans(Phake::anyParameters())->thenReturn('Unknown');
         Phake::when($this->renderer)->render(Phake::anyParameters())->thenReturn($expectedResult);
         $this->dataTable->setContainer($this->container);
 

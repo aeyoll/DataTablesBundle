@@ -293,7 +293,7 @@ class TableManager
         $tables  = array();
         $parser = $this->getXml($filePath);
 
-        if ($parser == false) {
+        if ($parser === false) {
             throw new \RuntimeException('Error loading config file:' . $filePath);
         }
 
@@ -305,7 +305,7 @@ class TableManager
                 }
             }
 
-            if ($id == null) {
+            if ($id === null) {
                 throw new \RuntimeException('XML DataTable definitions require an id attribute');
             }
 
@@ -396,7 +396,7 @@ class TableManager
                 $annotations = $this->getReader()->getClassAnnotations($refl);
                 foreach ($annotations as $annotation) {
                     if ($annotation instanceof Table) {
-                        if ($annotation->id == null) {
+                        if ($annotation->id === null) {
                             throw new InvalidArgumentException('DataTables requires an "id" attribute be provided');
                         }
                         $annotation->class = $refl->getName();
@@ -416,7 +416,7 @@ class TableManager
      */
     protected function getReader()
     {
-        if ($this->cachedReader != null) {
+        if ($this->cachedReader !== null) {
             return $this->cachedReader;
         }
 

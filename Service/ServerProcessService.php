@@ -65,7 +65,7 @@ class ServerProcessService extends AbstractServerProcessor
      */
     public function getQueryBuilder()
     {
-        if ($this->processor == null || !($this->processor instanceof QueryBuilderProcessor)) {
+        if ($this->processor === null || !($this->processor instanceof QueryBuilderProcessor)) {
             return null;
         }
 
@@ -87,7 +87,7 @@ class ServerProcessService extends AbstractServerProcessor
      */
     public function getData()
     {
-        if ($this->processor == null || !($this->processor instanceof ArrayProcessor)) {
+        if ($this->processor === null || !($this->processor instanceof ArrayProcessor)) {
             return null;
         }
 
@@ -115,7 +115,7 @@ class ServerProcessService extends AbstractServerProcessor
      */
     public function getRepository()
     {
-        if ($this->processor == null || !($this->processor instanceof RepositoryProcessor)) {
+        if ($this->processor === null || !($this->processor instanceof RepositoryProcessor)) {
             return null;
         }
 
@@ -134,7 +134,7 @@ class ServerProcessService extends AbstractServerProcessor
      */
     public function __call($method, $arguments)
     {
-        if ($this->processor == null || !($this->processor instanceof RepositoryProcessor)) {
+        if ($this->processor === null || !($this->processor instanceof RepositoryProcessor)) {
             Throw new ProcessorException("Generic calls require a Repository Processor, create one by running setRepository");
         }
 
@@ -150,7 +150,7 @@ class ServerProcessService extends AbstractServerProcessor
      */
     public function findAll()
     {
-        if ($this->processor == null || !($this->processor instanceof RepositoryProcessor)) {
+        if ($this->processor === null || !($this->processor instanceof RepositoryProcessor)) {
             Throw new ProcessorException("FindAll requires a Repository Processor, create one by running setRepository");
         }
 
@@ -171,7 +171,7 @@ class ServerProcessService extends AbstractServerProcessor
      */
     public function findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
     {
-        if ($this->processor == null || !($this->processor instanceof RepositoryProcessor)) {
+        if ($this->processor === null || !($this->processor instanceof RepositoryProcessor)) {
             Throw new ProcessorException("FindBy requires a Repository Processor, create one by running setRepository");
         }
 

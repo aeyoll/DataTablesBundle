@@ -70,7 +70,7 @@ class Table
     /**
      * @var string
      */
-    public $class = '';
+    public $class = null;
 
     /**
      * @var null|string name of entity to call repsitory for

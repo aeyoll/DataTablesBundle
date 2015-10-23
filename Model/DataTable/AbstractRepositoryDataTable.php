@@ -55,11 +55,11 @@ class AbstractRepositoryDataTable extends AbstractQueryBuilderDataTable implemen
     {
         $service = $this->container->get('data_tables.service');
 
-        if ($this->repository == null) {
+        if ($this->repository === null) {
             return null;
         }
 
-        if ($service->getRequest() == null) {
+        if ($service->getRequest() === null) {
             $service->setRequest($request);
         }
 

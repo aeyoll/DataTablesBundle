@@ -61,7 +61,7 @@ abstract class AbstractTableBuilder implements TableBuilderInterface
      */
     protected function getClassName($table)
     {
-        if (isset($table->class) && $table->class != null) {
+        if (isset($table->class) && $table->class !== null) {
             $className = $table->class;
         } else {
             $className = 'Brown298\DataTablesBundle\Test\DataTable\QueryBuilderDataTable';

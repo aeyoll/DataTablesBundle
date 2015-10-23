@@ -265,23 +265,23 @@ class DataTables extends \Twig_Extension
         foreach($columns as $column) {
             $data = array();
 
-            if ($column->sortable == false) {
+            if ($column->sortable === false) {
                 $data['bSortable']    = false;
             }
 
-            if ($column->searchable == false) {
+            if ($column->searchable === false) {
                 $data['bSearchable']    = false;
             }
 
-            if ($column->visible == false) {
+            if ($column->visible === false) {
                 $data['bVisible']    = false;
             }
 
-            if ($column->class != null) {
+            if ($column->class !== null) {
                 $data['sClass'] = $column->class;
             }
 
-            if ($column->width != null) {
+            if ($column->width !== null) {
                 $data['sWidth'] = $column->width;
             }
 
@@ -289,7 +289,7 @@ class DataTables extends \Twig_Extension
                 $data['iDataSort'] = $count;
 	    }
 
-            if ($column->stype != null) {
+            if ($column->stype !== null) {
                 $data['sType'] = $column->stype;
 	    }
 

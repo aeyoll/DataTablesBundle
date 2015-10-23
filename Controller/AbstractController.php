@@ -32,7 +32,7 @@ abstract class AbstractController extends Controller
      */
     protected function getData(Request $request)
     {
-        if ($this->dataTable == null) {
+        if ($this->dataTable === null) {
             $this->dataTable = new QueryBuilderDataTable();
             $this->dataTable->setContainer($this->container);
         }
@@ -49,7 +49,7 @@ abstract class AbstractController extends Controller
      */
     protected function getQueryBuilder(Request $request)
     {
-        if ($this->dataTable == null) {
+        if ($this->dataTable === null) {
             $this->dataTable = new QueryBuilderDataTable();
             $this->dataTable->setContainer($this->container);
         }

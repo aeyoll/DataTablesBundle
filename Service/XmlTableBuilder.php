@@ -107,7 +107,7 @@ class XmlTableBuilder extends AbstractTableBuilder implements TableBuilderInterf
                 }
             }
 
-            if ($source == null || $name == null) {
+            if ($source == null || $name === null) {
                 throw new InvalidArgumentException('DataTables requires a "source" and "name" attribute be provided for any Data provided to a formatter');
             }
 
@@ -130,7 +130,7 @@ class XmlTableBuilder extends AbstractTableBuilder implements TableBuilderInterf
                 $column = new Column();
                 foreach ($columnData->attributes() as $name => $attribute) {
                     if (property_exists($column, $name)) {
-                        if (is_string($column->$name) || $column->$name == null) {
+                        if (is_string($column->$name) || $column->$name === null) {
                             $column->$name = $attribute->__toString();
                         } else {
                             $column->$name = strtolower($attribute->__toString()) == 'true';

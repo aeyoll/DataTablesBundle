@@ -1,6 +1,7 @@
 <?php
 namespace Brown298\DataTablesBundle\Model\DataTable;
 
+use Brown298\DataTablesBundle\Exceptions\ResourceNotFoundException;
 use Brown298\DataTablesBundle\Model\Cache\CacheBagInterface;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\PersistentCollection;
@@ -134,7 +135,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
         if (isset($column->format)) {
             $args = array();
 
-            if ($this->bulkFormView != null) {
+            if ($this->bulkFormView !== null) {
                 $args['form'] = $this->bulkFormView;
             }
 
@@ -142,7 +143,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
                 $args[$name] = $this->getColumnArg($row, $source);
             }
 
-            if ($column->format->template != null) {
+            if ($column->format->template !== null) {
                 $renderer = $this->container->get('templating');
                 $result   = $renderer->render($column->format->template, $args);
             } else { // no render so send back the raw data
@@ -213,7 +214,6 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
      */
     protected function getDataValue($row, $source)
     {
-        $translator  = $this->container->get('translator');
         $result = null;
         if (is_object($row)) {
             $result = $this->getObjectValue($row, $source);
@@ -223,11 +223,36 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
             if (isset($row[$current])) {
                 $result = $row[$current];
             } else {
-                $result = $translator->trans('data_tables.unknown_value_at', array('%current%' => $current));
+                $result = $this->translate('data_tables.unknown_value_at', array('%current%' => $current));
             }
         }
 
         return $result;
+    }
+
+    /**
+     * used to translate keywords into another language
+     *
+     * @param $id
+     * @param array $parameters
+     * @param null $domain
+     * @param null $locale
+     * @return string
+     * @throws ResourceNotFoundException
+     */
+    protected function translate($id, array $parameters = array(), $domain = null, $locale = null)
+    {
+        // don't translate if it is not available
+        if ($this->container === null) {
+            return $id;
+        }
+
+        $translator  = $this->container->get('translator');
+        if ($translator === null ) {
+            throw new ResourceNotFoundException('Could not find translation component');
+        }
+
+        return $translator->trans($id, $parameters, $domain, $locale);
     }
 
     /**
@@ -241,8 +266,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
      */
     protected function getObjectValue($row, $source)
     {
-        $translator  = $this->container->get('translator');
-        $result      = $translator->trans('data_tables.unknown_value');
+        $result      = $this->translate('data_tables.unknown_value');
         $tokens      = explode('.', $source);
         $currentName = array_pop($tokens);
         $name        = 'get' . Inflector::classify($currentName);
@@ -277,7 +301,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
      */
     public function getDataFormatter()
     {
-        if ($this->dataFormatter == null && !empty($this->metaData)) {
+        if ($this->dataFormatter === null && !empty($this->metaData)) {
             $table = $this;
             $this->dataFormatter = function($data) use ($table) {
                 $count   = 0;
