@@ -213,7 +213,7 @@ class DataTables extends \Twig_Extension
             $params = array();
         }
 
-        if ($this->dataTable != null) {
+        if ($this->dataTable !== null) {
             $this->buildDefaults();
         }
 

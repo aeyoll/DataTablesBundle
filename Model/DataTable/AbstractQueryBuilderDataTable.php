@@ -125,7 +125,7 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
      */
     public function getQueryBuilder(Request $request = null)
     {
-        if ($this->queryBuilder != null) {
+        if ($this->queryBuilder !== null) {
             return $this->queryBuilder;
         }
 
@@ -138,7 +138,7 @@ abstract class AbstractQueryBuilderDataTable extends AbstractDataTable implement
             // generate via metadata if possible
             $repo = $this->em->getRepository($this->metaData['table']->entity);
 
-            if ($this->metaData['table']->queryBuilder != null) {
+            if ($this->metaData['table']->queryBuilder !== null) {
                 $function = $this->metaData['table']->queryBuilder;
 
                 if(method_exists($repo, $function)) {

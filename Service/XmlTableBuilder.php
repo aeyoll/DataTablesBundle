@@ -107,7 +107,7 @@ class XmlTableBuilder extends AbstractTableBuilder implements TableBuilderInterf
                 }
             }
 
-            if ($source == null || $name === null) {
+            if ($source === null || $name === null) {
                 throw new InvalidArgumentException('DataTables requires a "source" and "name" attribute be provided for any Data provided to a formatter');
             }
 

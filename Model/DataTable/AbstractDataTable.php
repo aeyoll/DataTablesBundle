@@ -188,7 +188,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
     public function getColumnRendering($row)
     {
         $result   = array();
-        if ($this->cacheBag != null) {
+        if ($this->cacheBag !== null) {
             $key = $this->cacheBag->getKeyName('row_data', array(hash('md4', serialize($row))));
             if ($result = $this->cacheBag->fetch($key)) {
                 $result = unserialize($result);
@@ -199,7 +199,7 @@ abstract class AbstractDataTable implements DataTableInterface, ContainerAwareIn
             foreach($this->metaData['columns'] as $column) {
                 $result[] = $this->getColumnRendered($row, $column);
             }
-            if ($this->cacheBag != null) {
+            if ($this->cacheBag !== null) {
                 $this->cacheBag->save($key, serialize($result));
             }
         }

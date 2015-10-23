@@ -4,12 +4,12 @@ namespace Brown298\DataTablesBundle\Service;
 use Brown298\DataTablesBundle\MetaData\Table;
 use Brown298\DataTablesBundle\Model\Cache\CacheBag;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\CachedReader;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Exception\InvalidArgumentException;
 use Symfony\Component\Yaml\Parser;
-use Doctrine\Common\Annotations\FileCacheReader;
 
 /**
  * Class TableManager
@@ -412,7 +412,7 @@ class TableManager
     /**
      * getReader
      *
-     * @return FileCacheReader
+     * @return CachedReader
      */
     protected function getReader()
     {
@@ -421,7 +421,7 @@ class TableManager
         }
 
         $kernel = $this->container->get('kernel');
-        $this->cachedReader = new FileCacheReader($this->reader, $kernel->getCacheDir(), $kernel->getEnvironment() == 'dev');
+        $this->cachedReader = new CachedReader($this->reader, $kernel->getCacheDir(), $kernel->getEnvironment() == 'dev');
 
         return $this->cachedReader;
     }
