@@ -148,12 +148,11 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
      */
     public function addGenericSearch(QueryBuilder $qb)
     {
-        $search           = $this->requestParameters->getSearchString();
-        $orX              = $qb->expr()->orX();
-        $query            = '';
-        $queryParams      = array();
-        $conditionsHaving = array();
-        $conditionsWhere  = array();
+        $search      = $this->requestParameters->getSearchString();
+        $joinType    = 'or';
+        $alias       = false;
+        $query       = '';
+        $queryParams = array();
 
         // add search
         $this->debug("sSearch: {$search}");
@@ -161,30 +160,32 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
 
         if (!empty($searchColumns)) {
             $this->debug('SearchColumns:' . implode(', ', $searchColumns));
-            foreach ($searchColumns as $name => $title) {
-                // Alias
-                if (strpos($name, '.') === false) {
-                    $conditionsHaving[] = $qb->expr()->like(
-                        "$name",
-                        $qb->expr()->literal('%' . $search . '%')
-                    );
-                } else {
-                    $conditionsWhere[] = $qb->expr()->like(
-                        "$name",
-                        $qb->expr()->literal('%' . $search . '%')
-                    );
+
+            if (strlen($search) > 0) {
+                foreach ($searchColumns as $name => $title) {
+                    $paramName = str_replace('.', '_', $name) . '_search';
+
+                    // Alias
+                    if (strpos($name, '.') === false) {
+                        $alias = true;
+                    }
+
+                    if (strlen($query) > 0) {
+                        $query .= " {$joinType} ";
+                    }
+
+                    $query .= "{$name} LIKE :{$paramName}";
+                    $queryParams[$paramName] = '%' . $search . '%';
                 }
             }
 
-            if (count($conditionsHaving)) {
-                $qb->having($orX->addMultiple($conditionsHaving));
-            } elseif (count($conditionsWhere)) {
-                $qb->andWhere($orX->addMultiple($conditionsWhere));
-            }
-
-            // add the parameters
             if (strlen($query) > 0) {
-                $qb->andWhere($query);
+                if ($alias) {
+                    $qb->andHaving($query);
+                } else {
+                    $qb->andWhere($query);
+                }
+
                 foreach ($queryParams as $name => $value) {
                     $qb->setParameter($name, $value);
                 }

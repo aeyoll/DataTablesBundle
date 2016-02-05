@@ -328,6 +328,29 @@ class QueryBuilderProcessorTest extends AbstractTest
     }
 
     /**
+     * testGenericSearchColumnWithAlias
+     *
+     * tests a single search colmn
+     */
+    public function testGenericSearchColumnWithAlias()
+    {
+        $columns = array(
+            'alias' => 'ID',
+        );
+        Phake::when($this->requestParameters)->getSearchString()->thenReturn('test');
+        Phake::when($this->requestParameters)->getSearchColumns()->thenReturn($columns);
+        $this->setProtectedValue($this->service, 'requestParameters', $this->requestParameters);
+        $this->service->setLogger($this->logger);
+
+        $result = $this->service->addGenericSearch($this->queryBuilder);
+
+        $this->assertEquals($this->queryBuilder, $result);
+        Phake::verify($this->logger)->debug('sSearch: test');
+        Phake::verify($this->queryBuilder)->setParameter('alias_search', '%test%');
+        Phake::verify($this->queryBuilder)->andHaving('alias LIKE :alias_search');
+    }
+
+    /**
      * testGenericSearchColumns
      */
     public function testGenericSearchColumns()
@@ -348,6 +371,29 @@ class QueryBuilderProcessorTest extends AbstractTest
         Phake::verify($this->queryBuilder)->setParameter('a_id_search', '%test%');
         Phake::verify($this->queryBuilder)->setParameter('a_name_search', '%test%');
         Phake::verify($this->queryBuilder)->andWhere('a.id LIKE :a_id_search or a.name LIKE :a_name_search');
+    }
+
+    /**
+     * testGenericSearchColumnsWithAlias
+     */
+    public function testGenericSearchColumnsWithAlias()
+    {
+        $columns = array(
+            'a.id'  => 'ID',
+            'alias' => 'Name',
+        );
+        Phake::when($this->requestParameters)->getSearchString()->thenReturn('test');
+        Phake::when($this->requestParameters)->getSearchColumns()->thenReturn($columns);
+        $this->setProtectedValue($this->service, 'requestParameters', $this->requestParameters);
+        $this->service->setLogger($this->logger);
+
+        $result = $this->service->addGenericSearch($this->queryBuilder);
+
+        $this->assertEquals($this->queryBuilder, $result);
+        Phake::verify($this->logger)->debug('sSearch: test');
+        Phake::verify($this->queryBuilder)->setParameter('a_id_search', '%test%');
+        Phake::verify($this->queryBuilder)->setParameter('alias_search', '%test%');
+        Phake::verify($this->queryBuilder)->andHaving('a.id LIKE :a_id_search or alias LIKE :alias_search');
     }
 
     /**
