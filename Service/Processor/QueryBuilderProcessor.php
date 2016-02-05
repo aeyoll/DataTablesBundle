@@ -148,26 +148,38 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
      */
     public function addGenericSearch(QueryBuilder $qb)
     {
-        $search      = $this->requestParameters->getSearchString();
-        $joinType    = 'or';
-        $query       = '';
-        $queryParams = array();
+        $search           = $this->requestParameters->getSearchString();
+        $orX              = $qb->expr()->orX();
+        $query            = '';
+        $queryParams      = array();
+        $conditionsHaving = array();
+        $conditionsWhere  = array();
 
         // add search
         $this->debug("sSearch: {$search}");
         $searchColumns = $this->getSearchColumns();
 
         if (!empty($searchColumns)) {
-            $this->debug('SearchColumns:' . implode(', ',$searchColumns));
+            $this->debug('SearchColumns:' . implode(', ', $searchColumns));
             foreach ($searchColumns as $name => $title) {
-                if (strlen($search) > 0) {
-                    $paramName = str_replace('.','_',$name) . '_search';
-                    if (strlen($query) > 0) {
-                        $query .= " {$joinType} ";
-                    }
-                    $query .= "{$name} LIKE :{$paramName}";
-                    $queryParams[$paramName] = '%' . $search . '%';
+                // Alias
+                if (strpos($name, '.') === false) {
+                    $conditionsHaving[] = $qb->expr()->like(
+                        "$name",
+                        $qb->expr()->literal('%' . $search . '%')
+                    );
+                } else {
+                    $conditionsWhere[] = $qb->expr()->like(
+                        "$name",
+                        $qb->expr()->literal('%' . $search . '%')
+                    );
                 }
+            }
+
+            if (count($conditionsHaving)) {
+                $qb->having($orX->addMultiple($conditionsHaving));
+            } elseif (count($conditionsWhere)) {
+                $qb->andWhere($orX->addMultiple($conditionsWhere));
             }
 
             // add the parameters
