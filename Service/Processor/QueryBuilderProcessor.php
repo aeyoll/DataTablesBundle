@@ -150,6 +150,7 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
     {
         $search      = $this->requestParameters->getSearchString();
         $joinType    = 'or';
+        $alias       = false;
         $query       = '';
         $queryParams = array();
 
@@ -158,21 +159,33 @@ class QueryBuilderProcessor extends AbstractProcessor implements ProcessorInterf
         $searchColumns = $this->getSearchColumns();
 
         if (!empty($searchColumns)) {
-            $this->debug('SearchColumns:' . implode(', ',$searchColumns));
-            foreach ($searchColumns as $name => $title) {
-                if (strlen($search) > 0) {
-                    $paramName = str_replace('.','_',$name) . '_search';
+            $this->debug('SearchColumns:' . implode(', ', $searchColumns));
+
+            if (strlen($search) > 0) {
+                foreach ($searchColumns as $name => $title) {
+                    $paramName = str_replace('.', '_', $name) . '_search';
+
+                    // Alias
+                    if (strpos($name, '.') === false) {
+                        $alias = true;
+                    }
+
                     if (strlen($query) > 0) {
                         $query .= " {$joinType} ";
                     }
+
                     $query .= "{$name} LIKE :{$paramName}";
                     $queryParams[$paramName] = '%' . $search . '%';
                 }
             }
 
-            // add the parameters
             if (strlen($query) > 0) {
-                $qb->andWhere($query);
+                if ($alias) {
+                    $qb->andHaving($query);
+                } else {
+                    $qb->andWhere($query);
+                }
+
                 foreach ($queryParams as $name => $value) {
                     $qb->setParameter($name, $value);
                 }
