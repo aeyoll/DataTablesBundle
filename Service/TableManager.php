@@ -4,7 +4,7 @@ namespace Brown298\DataTablesBundle\Service;
 use Brown298\DataTablesBundle\MetaData\Table;
 use Brown298\DataTablesBundle\Model\Cache\CacheBag;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\CachedReader;
+use Doctrine\Common\Annotations\FileCacheReader
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
@@ -412,7 +412,7 @@ class TableManager
     /**
      * getReader
      *
-     * @return CachedReader
+     * @return FileCacheReader
      */
     protected function getReader()
     {
@@ -421,7 +421,7 @@ class TableManager
         }
 
         $kernel = $this->container->get('kernel');
-        $this->cachedReader = new CachedReader($this->reader, $kernel->getCacheDir(), $kernel->getEnvironment() == 'dev');
+        $this->cachedReader = new FileCacheReader($this->reader, $kernel->getCacheDir(), $kernel->getEnvironment() == 'dev');
 
         return $this->cachedReader;
     }
