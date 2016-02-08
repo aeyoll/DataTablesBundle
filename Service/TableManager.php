@@ -4,7 +4,7 @@ namespace Brown298\DataTablesBundle\Service;
 use Brown298\DataTablesBundle\MetaData\Table;
 use Brown298\DataTablesBundle\Model\Cache\CacheBag;
 use Doctrine\Common\Annotations\AnnotationReader;
-use Doctrine\Common\Annotations\FileCacheReader
+use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Finder\Finder;
